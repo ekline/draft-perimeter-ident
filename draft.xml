@@ -136,7 +136,8 @@ should be applied to traffic crossing a perimeter is not specified.
     </section>
 
     <section title="Introduction">
-Identification of “external” versus “internal” zones requires identifying when traffic is crossing a perimeter.  The automatic, simple detection of this perimeter is highly desirable, as this could thereby form the de facto security perimeter for the home network in the absence of manual intervention.
+      <t>
+Identification of "external" versus "internal" zones requires identifying when traffic is crossing a perimeter.  The automatic, simple detection of this perimeter is highly desirable, as this could thereby form the de facto security perimeter for the home network in the absence of manual intervention.
 Proposed here is a set of tests to be applied to traffic scheduled for forwarding, which can be used collectively to identify this perimeter.  What policy should be applied to traffic crossing this perimeter is not specified.
 Assumptions include:
 A mechanism exists to manually override these defaults.
@@ -154,6 +155,7 @@ TODO: see if we can rewrite this as a set of tests, and make ordering important.
 [RTDDOM] By default, unless manually configured otherwise, traffic received from or to be sent via next-hops which are NOT participating in an authenticated routing domain when an authenticated routing domain is otherwise in use SHOULD be considered as crossing a perimeter.
 [PPPTUN] By default, unless manually configured otherwise, traffic received or to be sent via interfaces which are point-to-point in nature or  are tunnel/encapsulated interfaces SHOULD be considered as crossing a perimeter.
 Examles of interfaces that by default would form a perimeter include PPP, PPPoE, PPPoA, L2TP tunnel interfaces, and typical VPN interfaces.  This also includes Teredo, 6to4, 6rd, and 4rd interfaces.
+      </t>
     </section>
 
     <section anchor="simple_list" title="Simple List">
@@ -298,6 +300,7 @@ Examles of interfaces that by default would form a perimeter include PPP, PPPoE,
       </section>
     </section>
 
+<!--
     <section anchor="codeExample"
              title="Example of Code or MIB Module To Be Extracted">
       <figure>
@@ -338,6 +341,7 @@ main(int argc, char *argv[])
             ]]></artwork>
       </figure>
     </section>
+-->
 
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>This template was derived from an initial version written by Pekka

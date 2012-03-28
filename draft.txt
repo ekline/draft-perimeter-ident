@@ -8,12 +8,16 @@ Expires: September 29, 2012
 
 
                     Default Perimeter Identification
-                     draft-ietf-xml2rfc-template-06
+                    draft-kline-default-perimeter-00
 
 Abstract
 
-   Insert an abstract: MANDATORY.  This template is for creating an
-   Internet Draft.
+   Automatic, simple identification of when traffic is crossing a
+   perimeter is highly desirable for a variety of home network uses.
+   This document proposes a set of tests to be applied to traffic
+   scheduled for forwarding, which can be used collectively to identify
+   this perimeter.  What policy should be applied to traffic crossing a
+   perimeter is not specified.
 
 Status of this Memo
 
@@ -45,42 +49,38 @@ Copyright Notice
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
-   described in the Simplified BSD License.
-
-
-
 
 
 
 Kline                  Expires September 29, 2012               [Page 1]
 
-Internet-Draft              Abbreviated Title                 March 2012
+Internet-Draft      Default Perimeter Identification          March 2012
+
+
+   described in the Simplified BSD License.
 
 
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 3
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . . . 3
-   2.  Simple List . . . . . . . . . . . . . . . . . . . . . . . . . . 3
-   3.  Figures . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
-   4.  Subsections and Tables  . . . . . . . . . . . . . . . . . . . . 4
-     4.1.  A Subsection  . . . . . . . . . . . . . . . . . . . . . . . 4
-     4.2.  Tables  . . . . . . . . . . . . . . . . . . . . . . . . . . 4
-   5.  More about Lists  . . . . . . . . . . . . . . . . . . . . . . . 4
-     5.1.  Numbering Lists across Lists and Sections . . . . . . . . . 5
-     5.2.  Where the List Numbering Continues  . . . . . . . . . . . . 5
-   6.  Example of Code or MIB Module To Be Extracted . . . . . . . . . 6
-   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 7
-   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 7
+   2.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 3
+   3.  Simple List . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+   4.  Figures . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+   5.  Subsections and Tables  . . . . . . . . . . . . . . . . . . . . 4
+     5.1.  A Subsection  . . . . . . . . . . . . . . . . . . . . . . . 4
+     5.2.  Tables  . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+   6.  More about Lists  . . . . . . . . . . . . . . . . . . . . . . . 5
+     6.1.  Numbering Lists across Lists and Sections . . . . . . . . . 5
+     6.2.  Where the List Numbering Continues  . . . . . . . . . . . . 6
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 6
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 6
    9.  Security Considerations . . . . . . . . . . . . . . . . . . . . 7
    10. References  . . . . . . . . . . . . . . . . . . . . . . . . . . 7
      10.1. Normative References  . . . . . . . . . . . . . . . . . . . 7
      10.2. Informative References  . . . . . . . . . . . . . . . . . . 7
-   Appendix A.  Additional Stuff . . . . . . . . . . . . . . . . . . . 8
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . . . 8
-
-
-
+   Appendix A.  Additional Stuff . . . . . . . . . . . . . . . . . . . 7
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . . . 7
 
 
 
@@ -110,7 +110,7 @@ Table of Contents
 
 Kline                  Expires September 29, 2012               [Page 2]
 
-Internet-Draft              Abbreviated Title                 March 2012
+Internet-Draft      Default Perimeter Identification          March 2012
 
 
 1.  Introduction
@@ -125,7 +125,54 @@ Internet-Draft              Abbreviated Title                 March 2012
    document are to be interpreted as described in RFC 2119 [RFC2119].
 
 
-2.  Simple List
+2.  Introduction
+
+   Identification of "external" versus "internal" zones requires
+   identifying when traffic is crossing a perimeter.  The automatic,
+   simple detection of this perimeter is highly desirable, as this could
+   thereby form the de facto security perimeter for the home network in
+   the absence of manual intervention.  Proposed here is a set of tests
+   to be applied to traffic scheduled for forwarding, which can be used
+   collectively to identify this perimeter.  What policy should be
+   applied to traffic crossing this perimeter is not specified.
+   Assumptions include: A mechanism exists to manually override these
+   defaults.  RA-guard is sensibly, universally in effect.  Something
+   other than DHCPv6-PD will be used within the home (eventually) to
+   distribute prefixes.  By default, unless manually configured
+   otherwise, traffic received or to be sent: via interfaces which are
+   point-to-point (e.g., PPP(oE) interfaces, L2TP/VPNs/tunnels in
+   general, et cetera), or via next-hops which issued an RA in which on-
+   link computation was disabled (TODO: exception text for link types
+   where !on-link is normal, e.g.  LLN if the forwarding device in
+   question is, say, a 6LBR), or via interfaces from which a prefix has
+   been delegated via DHCPv6-PD, or via interfaces which have NO
+   RFC3484(bis) global scope addresses of the same family as the passing
+   traffic, or via next-hops which are NOT participating in an
+   authenticated routing domain, when an authenticated routing domain is
+   otherwise in use, MUST be considered as crossing a perimeter.  TODO:
+   see if we can rewrite this as a set of tests, and make ordering
+   important.  [RTDDOM] By default, unless manually configured
+   otherwise, traffic received from or to be sent via next-hops which
+   are NOT participating in an authenticated routing domain when an
+   authenticated routing domain is otherwise in use SHOULD be considered
+   as crossing a perimeter.  [PPPTUN] By default, unless manually
+   configured otherwise, traffic received or to be sent via interfaces
+   which are point-to-point in nature or are tunnel/encapsulated
+   interfaces SHOULD be considered as crossing a perimeter.  Examles of
+   interfaces that by default would form a perimeter include PPP, PPPoE,
+   PPPoA, L2TP tunnel interfaces, and typical VPN interfaces.  This also
+
+
+
+Kline                  Expires September 29, 2012               [Page 3]
+
+Internet-Draft      Default Perimeter Identification          March 2012
+
+
+   includes Teredo, 6to4, 6rd, and 4rd interfaces.
+
+
+3.  Simple List
 
    List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging',
    'format'.
@@ -137,7 +184,7 @@ Internet-Draft              Abbreviated Title                 March 2012
    You can write text here as well.
 
 
-3.  Figures
+4.  Figures
 
    Figures should not exceed 69 characters wide to allow for the indent
    of sections.
@@ -159,26 +206,24 @@ Internet-Draft              Abbreviated Title                 March 2012
    figures even if you don't use CDATA.
 
 
+5.  Subsections and Tables
 
-
-
-
-
-Kline                  Expires September 29, 2012               [Page 3]
-
-Internet-Draft              Abbreviated Title                 March 2012
-
-
-4.  Subsections and Tables
-
-4.1.  A Subsection
+5.1.  A Subsection
 
    By default 3 levels of nesting show in table of contents but that can
    be adjusted with the value of the "tocdepth" processing instruction.
 
-4.2.  Tables
+5.2.  Tables
 
    .. are very similar to figures:
+
+
+
+
+Kline                  Expires September 29, 2012               [Page 4]
+
+Internet-Draft      Default Perimeter Identification          March 2012
+
 
      Tables use ttcol to define column headers and widths.  Every cell
                   then has a "c" element for its content.
@@ -196,7 +241,7 @@ Internet-Draft              Abbreviated Title                 March 2012
                        Table 1: A Very Simple Table
 
 
-5.  More about Lists
+6.  More about Lists
 
    Lists with 'hanging labels': the list item is indented the amount of
    the hangIndent:
@@ -207,23 +252,6 @@ Internet-Draft              Abbreviated Title                 March 2012
 
    vspace_trick
            Forces the new item to start on a new line.
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kline                  Expires September 29, 2012               [Page 4]
-
-Internet-Draft              Abbreviated Title                 March 2012
-
 
    Simulating more than one paragraph in a list item using <vspace>:
 
@@ -238,13 +266,20 @@ Internet-Draft              Abbreviated Title                 March 2012
              The quick, brown fox jumped over the lazy dog and lived to
              fool many another hunter in the great wood in the west.
 
-5.1.  Numbering Lists across Lists and Sections
+6.1.  Numbering Lists across Lists and Sections
 
    Numbering items continuously although they are in separate <list>
    elements, maybe in separate sections using the "format" style and a
    "counter" variable.
 
    First list:
+
+
+
+Kline                  Expires September 29, 2012               [Page 5]
+
+Internet-Draft      Default Perimeter Identification          March 2012
+
 
    R1  #1
 
@@ -262,24 +297,13 @@ Internet-Draft              Abbreviated Title                 March 2012
 
    R6  #6
 
-5.2.  Where the List Numbering Continues
+6.2.  Where the List Numbering Continues
 
    List continues here.
 
    Third list:
 
    R7   #7
-
-
-
-
-
-
-
-Kline                  Expires September 29, 2012               [Page 5]
-
-Internet-Draft              Abbreviated Title                 March 2012
-
 
    R8   #8
 
@@ -288,53 +312,6 @@ Internet-Draft              Abbreviated Title                 March 2012
    R10  #10
 
    The end of the list.
-
-
-6.  Example of Code or MIB Module To Be Extracted
-
-   The <artwork> element has a number of extra attributes that can be
-   used to substitute a more aesthetically pleasing rendition into HTML
-   output while continuing to use the ASCII art version in the text and
-   nroff outputs (see the xml2rfc README for details).  It also has a
-   "type" attribute.  This is currently ignored except in the case
-   'type="abnf"'.  In this case the "artwork" is expected to contain a
-   piece of valid Augmented Backus-Naur Format (ABNF) grammar.  This
-   will be syntax checked by xml2rfc and any errors will cause a fatal
-   error if the "strict" processing instruction is set to "yes".  The
-   ABNF will also be colorized in HTML output to highlight the syntactic
-   components.  Checking of additional "types" may be provided in future
-   versions of xml2rfc.
-
-
-   /**** an example C program */
-
-   #include <stdio.h>
-
-   void
-   main(int argc, char *argv[])
-   {
-       int i;
-
-       printf("program arguments are:\n");
-       for (i = 0; i < argc; i++) {
-           printf("%d: \"%s\"\n", i, argv[i]);
-       }
-
-       exit(0);
-   } /* main */
-
-   /* end of file */
-
-
-
-
-
-
-
-
-Kline                  Expires September 29, 2012               [Page 6]
-
-Internet-Draft              Abbreviated Title                 March 2012
 
 
 7.  Acknowledgements
@@ -352,6 +329,14 @@ Internet-Draft              Abbreviated Title                 March 2012
 
    All drafts are required to have an IANA considerations section (see
    Guidelines for Writing an IANA Considerations Section in RFCs
+
+
+
+Kline                  Expires September 29, 2012               [Page 6]
+
+Internet-Draft      Default Perimeter Identification          March 2012
+
+
    [RFC5226] for a guide).  If the draft does not require IANA to do
    anything, the section contains an explicit statement that this is the
    case (as above).  If there are no requirements for IANA, the section
@@ -386,13 +371,6 @@ Internet-Draft              Abbreviated Title                 March 2012
               Text on Security Considerations", BCP 72, RFC 3552,
               July 2003.
 
-
-
-Kline                  Expires September 29, 2012               [Page 7]
-
-Internet-Draft              Abbreviated Title                 March 2012
-
-
    [RFC5226]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
               IANA Considerations Section in RFCs", BCP 26, RFC 5226,
               May 2008.
@@ -403,15 +381,37 @@ Appendix A.  Additional Stuff
    This becomes an Appendix.
 
 
+
+
+
+
+
+
+
+Kline                  Expires September 29, 2012               [Page 7]
+
+Internet-Draft      Default Perimeter Identification          March 2012
+
+
 Author's Address
 
    Erik Kline (editor)
    Google Inc.
-   Soham,
-   UK
+   Minato ku, Tokyo  106-6126
+   JP
 
-   Phone: +44 7889 488 335
+   Phone: +81 XXX
    Email: elwynd@dial.pipex.com
+
+
+
+
+
+
+
+
+
+
 
 
 
