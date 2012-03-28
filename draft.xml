@@ -7,7 +7,6 @@
      An alternate method (rfc include) is described in the references. -->
 
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC2629 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml">
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC5226 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5226.xml">
 ]>
@@ -57,13 +56,12 @@
 
     <!-- Another author who claims to be an editor -->
 
-    <author fullname="Erik Kline" initials="E." role="editor"
-            surname="Kline">
+    <author fullname="Erik Kline" initials="E." surname="Kline">
       <organization>Google Inc.</organization>
 
       <address>
         <postal>
-          <street></street>
+          <street>Roppongi 6-10-1, 26th Floor</street>
 
           <!-- Reorder these if your country does things differently -->
 
@@ -76,9 +74,9 @@
           <country>JP</country>
         </postal>
 
-        <phone>+81 XXX</phone>
+        <phone>+81 03 6384 9635</phone>
 
-        <email>elwynd@dial.pipex.com</email>
+        <email>ek@google.com</email>
 
         <!-- uri and facsimile elements may also be added -->
       </address>
@@ -115,17 +113,24 @@
       <t>
 Automatic, simple identification of when traffic is crossing a perimeter
 is highly desirable for a variety of home network uses.  This document
-proposes a set of tests to be applied to traffic scheduled for forwarding,
-which can be used collectively to identify this perimeter.  What policy
-should be applied to traffic crossing a perimeter is not specified.
-</t>
+proposes a set of default tests to be applied to traffic scheduled for
+forwarding, which can be used collectively to identify this perimeter.
+      </t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>The original specification of xml2rfc format is in <xref
-      target="RFC2629">RFC&nbsp;2629</xref>.</t>
+      <t>
+Automatic, simple identification of when traffic is crossing a perimeter
+is highly desirable for a variety of home network uses.  This document
+proposes a set of default tests to be applied to traffic scheduled for
+forwarding, which can be used collectively to identify this perimeter.
+      </t>
+      <t>
+Specifying a policy that should be applied to traffic crossing this
+perimeter is out of scope of this document.
+      </t>
 
       <section title="Requirements Language">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -135,11 +140,11 @@ should be applied to traffic crossing a perimeter is not specified.
       </section>
     </section>
 
-    <section title="Introduction">
+    <section title="Assumptions">
       <t>
-Identification of "external" versus "internal" zones requires identifying when traffic is crossing a perimeter.  The automatic, simple detection of this perimeter is highly desirable, as this could thereby form the de facto security perimeter for the home network in the absence of manual intervention.
-Proposed here is a set of tests to be applied to traffic scheduled for forwarding, which can be used collectively to identify this perimeter.  What policy should be applied to traffic crossing this perimeter is not specified.
 Assumptions include:
+      </t>
+      <t>
 A mechanism exists to manually override these defaults.
 RA-guard is sensibly, universally in effect.
 Something other than DHCPv6-PD will be used within the home (eventually) to distribute prefixes.
@@ -407,7 +412,6 @@ main(int argc, char *argv[])
     <references title="Informative References">
       <!-- Here we use entities that we defined at the beginning. -->
 
-      &RFC2629;
 
       &RFC3552;
 
