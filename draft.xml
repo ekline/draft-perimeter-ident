@@ -61,16 +61,11 @@
 
       <address>
         <postal>
-          <street>Roppongi 6-10-1, 26th Floor</street>
-
           <!-- Reorder these if your country does things differently -->
-
-          <city>Minato ku</city>
-
+          <street>Roppongi 6-10-1, 26th Floor</street>
+          <city>Minato</city>
           <region>Tokyo</region>
-
           <code>106-6126</code>
-
           <country>JP</country>
         </postal>
 
