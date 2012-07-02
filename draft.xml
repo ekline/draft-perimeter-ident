@@ -156,6 +156,54 @@ TODO: see if we can rewrite this as a set of tests, and make ordering important.
 [PPPTUN] By default, unless manually configured otherwise, traffic received or to be sent via interfaces which are point-to-point in nature or  are tunnel/encapsulated interfaces SHOULD be considered as crossing a perimeter.
 Examles of interfaces that by default would form a perimeter include PPP, PPPoE, PPPoA, L2TP tunnel interfaces, and typical VPN interfaces.  This also includes Teredo, 6to4, 6rd, and 4rd interfaces.
       </t>
+      <t>
+        By default all nodes should follows best current security practices.  All nodes may times find themselves in hostile environments.  This is obviously true of mobile nodes, connecting to a variety of public "Wi-Fi" networks, for instance.  It is equally true of more traditionally fixed nodes: compromised mobile or fixed neighbor nodes may be used as a conduit for further compromise.
+
+        It is desirable to find automated technical mechanisms for broadly defining the boundary of a home network.  With a practical trustworthy mechanism a default configuration could define the "interior" and the "exterior", usually the greater Internet, and apply default security policies to traffic crossing borders between the two.
+
+        This is a non-trivial task as it is tantamount to automated discovery of administrative boundaries.
+
+        Many architectures fundamentally make it difficult or impossible to detect administrative boundaries and rely on various mechanisms of user or administrator invention to create or modify.  Other hints about administrative boundaries are insecure, unreliable, or impractical.
+
+        [router peering and reverse IP DNS delegation examples]
+
+        Nevertheless there are some guidelines that may be useful, though it is stressed that nothing is likely to be more secure than boundary detection by way of authenticated communication protocols (e.g. an authenticated interior routing protocol).
+
+        It is recommended that homenet routers administratively log the security/interior classification of interfaces, the reason(s) for such classification, and times at which such classifications are made or changed.
+
+        This document discusses interfaces, traffic traversing them, whether doing so should be considered as crossing a perimeter, and which interfaces are "interior" versus "exterior".  There may be multiple interior interfaces as well as multiple exterior interfaces.  Notions of perimeter between pairs of exterior interfaces are out of scope, as are notions of perimeter between multiple interior interfaces (e.g., a home router with wired and "guest" wireless networks).
+
+        ***Links requiring subscriber information***
+
+        Perhaps the most obvious administrative boundary is a link that requires subscriber credentials in order for that link to be "up".  Examples include PPPoE sessions, 3G/LTE PDP contexts (requiring a SIM card), and VPN links.  By default, all traffic traversing such a link SHOULD be considered to be traversing a boundary.
+
+        ***product-defined interface purposes***
+
+        Defined WAN ports versus LAN or WLAN ports...
+        Note guest SSID here as well...
+
+        ***DHCPv6 PD, IFF...***
+
+        DHCPv6 PD is at this time the most common method for supplying SoHo networks with a routable prefix block.
+
+        If (and only if) a means of distributing prefixes among interior routers is devised that does NOT use DHCPv6 Prefix Delegation, then a link on which DHCPv6 PD succeeded SHOULD be considered an administrative boundary and traffic traversing this interface SHOULD be considered to be traversing a security perimeter.
+
+        If PD is to be used within the interior where a single security policy is desired to be in effect, then this signal is not useful.
+
+        ***on-link neighbor communications***
+
+        Most home networking technology supports two nodes on the same logical link communicating directly.  By default, traffic traversing from such a link to one on which no on-link neighbor discovery and/or communication is permitted, either by design (e.g. a point-to-point link) or administrative choice (e.g. an 802.11 SSID on which the infrastructural access point forbids direct neighbor communications) SHOULD be considered as crossing an administrative boundary and therefore SHOULD be considered as crossing a security perimeter.
+
+        Note that it would be insecure to consider a link on which a default router had disabled on-link determination via flags in the IPv6 RA as changing from security perimeter to interior as such a router may not actually be part of the interior's administrative domain.
+
+        ***authenticated, secure routing protocol***
+
+        Undoubtedly the most reliable method for perimeter detection may be all interfaces a ...
+
+        [two routers each sharing a hub with two upstreams on it]
+
+        Routing protocol could further define security zones so that the rules among interiors and among exteriors could be defined...
+      </t>
     </section>
 
     <section anchor="simple_list" title="Simple List">
