@@ -6,15 +6,19 @@
      There has to be one entity for each item to be referenced. 
      An alternate method (rfc include) is described in the references. -->
 
-<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
-<!ENTITY RFC5226 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5226.xml">
+<!ENTITY RFC2119 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC3552 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY RFC5226 SYSTEM
+  "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5226.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
 <!-- For a complete list and description of processing instructions (PIs), 
      please see http://xml.resource.org/authoring/README.html. -->
-<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+<!-- Below are generally applicable Processing Instructions (PIs) that most
+     I-Ds might want to use.
      (Here they are set differently than their defaults in xml2rfc v1.32) -->
 <?rfc strict="yes" ?>
 <!-- give errors regarding ID-nits and DTD validation -->
@@ -39,18 +43,20 @@
      docName="draft-kline-default-perimeter-00"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
-     ipr values: trust200902, noModificationTrust200902, noDerivativesTrust200902,
-        or pre5378Trust200902
-     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
-     they will automatically be output with "(if approved)" -->
+       ipr values: trust200902, noModificationTrust200902,
+                   noDerivativesTrust200902, or pre5378Trust200902
+       you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+       they will automatically be output with "(if approved)" -->
 
   <!-- ***** FRONT MATTER ***** -->
 
   <front>
-    <!-- The abbreviated title is used in the page header - it is only necessary if the 
-         full title is longer than 39 characters -->
+    <!-- The abbreviated title is used in the page header - it is only
+         necessary if the full title is longer than 39 characters -->
 
-    <title abbrev="Default Perimeter Identification">Default Perimeter Identification</title>
+    <title abbrev="Default Perimeter Identification">
+Default Perimeter Identification
+    </title>
 
     <!-- add 'role="editor"' below for the editors if appropriate -->
 
@@ -79,12 +85,13 @@
 
     <date year="2012" />
 
-    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
-         in the current day for you. If only the current year is specified, xml2rfc will fill 
-	 in the current day and month for you. If the year is not the current one, it is 
-	 necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
-	 purpose of calculating the expiry date).  With drafts it is normally sufficient to 
-	 specify just the year. -->
+    <!-- If the month and year are both specified and are the current ones,
+         xml2rfc will fill in the current day for you. If only the current
+         year is specified, xml2rfc will fill in the current day and month
+         for you. If the year is not the current one, it is necessary to
+         specify at least a month (xml2rfc assumes day="1" if not specified
+         for the purpose of calculating the expiry date).  With drafts it is
+         normally sufficient to specify just the year. -->
 
     <!-- Meta-data Declarations -->
 
@@ -92,10 +99,10 @@
 
     <workgroup>Internet Engineering Task Force</workgroup>
 
-    <!-- WG name at the upperleft corner of the doc,
-         IETF is fine for individual submissions.  
-	 If this element is not present, the default is "Network Working Group",
-         which is used by the RFC Editor as a nod to the history of the IETF. -->
+    <!-- WG name at the upperleft corner of the doc, IETF is fine for
+         individual submissions.  If this element is not present, the default
+         is "Network Working Group", which is used by the RFC Editor as a nod
+         to the history of the IETF. -->
 
     <keyword>template</keyword>
 
@@ -135,80 +142,172 @@ perimeter is out of scope of this document.
       </section>
     </section>
 
-    <section title="Assumptions">
+    <section title="Disclaimers">
+      <t>
+By default all nodes should follows best current security practices.  All
+nodes may at times find themselves in hostile environments.  This is obviously
+true of mobile nodes when, for instance, connecting to a variety of public
+"Wi-Fi" networks.  It is equally true of more traditionally fixed nodes:
+compromised mobile or fixed neighbor nodes may be used as a conduit for
+further compromise.
+      </t>
+      <t>
+It is recommended that homenet routers administratively log the
+security/interior classification of interfaces, the reason(s) for such
+classification, and times at which such classifications are made or changed.
+      </t>
+    </section>
+
+    <section title="Ignore these old scribblings">
       <t>
 Assumptions include:
       </t>
       <t>
 A mechanism exists to manually override these defaults.
 RA-guard is sensibly, universally in effect.
-Something other than DHCPv6-PD will be used within the home (eventually) to distribute prefixes.
-By default, unless manually configured otherwise, traffic received or to be sent:
-via interfaces which are point-to-point (e.g., PPP(oE) interfaces, L2TP/VPNs/tunnels in general, et cetera), or
-via next-hops which issued an RA in which on-link computation was disabled (TODO: exception text for link types where !on-link is normal, e.g. LLN if the forwarding device in question is, say, a 6LBR), or
+Something other than DHCPv6-PD will be used within the home (eventually)
+to distribute prefixes.
+By default, unless manually configured otherwise, traffic received or to be
+sent:
+via interfaces which are point-to-point (e.g., PPP(oE) interfaces,
+L2TP/VPNs/tunnels in general, et cetera), or
+via next-hops which issued an RA in which on-link computation was disabled
+(TODO: exception text for link types where !on-link is normal, e.g.
+LLN if the forwarding device in question is, say, a 6LBR), or
 via interfaces from which a prefix has been delegated via DHCPv6-PD, or
-via interfaces which have NO RFC3484(bis) global scope addresses of the same family as the passing traffic, or
-via next-hops which are NOT participating in an authenticated routing domain, when an authenticated routing domain is otherwise in use,
+via interfaces which have NO RFC3484(bis) global scope addresses of the same
+family as the passing traffic, or
+via next-hops which are NOT participating in an authenticated routing domain,
+when an authenticated routing domain is otherwise in use,
 MUST be considered as crossing a perimeter.
 
-TODO: see if we can rewrite this as a set of tests, and make ordering important.
-[RTDDOM] By default, unless manually configured otherwise, traffic received from or to be sent via next-hops which are NOT participating in an authenticated routing domain when an authenticated routing domain is otherwise in use SHOULD be considered as crossing a perimeter.
-[PPPTUN] By default, unless manually configured otherwise, traffic received or to be sent via interfaces which are point-to-point in nature or  are tunnel/encapsulated interfaces SHOULD be considered as crossing a perimeter.
-Examles of interfaces that by default would form a perimeter include PPP, PPPoE, PPPoA, L2TP tunnel interfaces, and typical VPN interfaces.  This also includes Teredo, 6to4, 6rd, and 4rd interfaces.
+TODO: see if we can rewrite this as an ordered set of tests or rules.
+[RTDDOM] By default, unless manually configured otherwise, traffic received
+from or to be sent via next-hops which are NOT participating in an
+authenticated routing domain when an authenticated routing domain is
+otherwise in use SHOULD be considered as crossing a perimeter.
+[PPPTUN] By default, unless manually configured otherwise, traffic received
+or to be sent via interfaces which are point-to-point in nature or
+are tunnel/encapsulated interfaces SHOULD be considered as crossing a perimeter.
+Examles of interfaces that by default would form a perimeter include
+PPP, PPPoE, PPPoA, L2TP tunnel interfaces, and typical VPN interfaces.
+This also includes Teredo, 6to4, 6rd, and 4rd interfaces.
       </t>
       <t>
-        By default all nodes should follows best current security practices.  All nodes may times find themselves in hostile environments.  This is obviously true of mobile nodes, connecting to a variety of public "Wi-Fi" networks, for instance.  It is equally true of more traditionally fixed nodes: compromised mobile or fixed neighbor nodes may be used as a conduit for further compromise.
-
-        It is desirable to find automated technical mechanisms for broadly defining the boundary of a home network.  With a practical trustworthy mechanism a default configuration could define the "interior" and the "exterior", usually the greater Internet, and apply default security policies to traffic crossing borders between the two.
-
-        This is a non-trivial task as it is tantamount to automated discovery of administrative boundaries.
-
-        Many architectures fundamentally make it difficult or impossible to detect administrative boundaries and rely on various mechanisms of user or administrator invention to create or modify.  Other hints about administrative boundaries are insecure, unreliable, or impractical.
-
-        [router peering and reverse IP DNS delegation examples]
-
-        Nevertheless there are some guidelines that may be useful, though it is stressed that nothing is likely to be more secure than boundary detection by way of authenticated communication protocols (e.g. an authenticated interior routing protocol).
-
-        It is recommended that homenet routers administratively log the security/interior classification of interfaces, the reason(s) for such classification, and times at which such classifications are made or changed.
-
-        This document discusses interfaces, traffic traversing them, whether doing so should be considered as crossing a perimeter, and which interfaces are "interior" versus "exterior".  There may be multiple interior interfaces as well as multiple exterior interfaces.  Notions of perimeter between pairs of exterior interfaces are out of scope, as are notions of perimeter between multiple interior interfaces (e.g., a home router with wired and "guest" wireless networks).
-
-        ***Links requiring subscriber information***
-
-        Perhaps the most obvious administrative boundary is a link that requires subscriber credentials in order for that link to be "up".  Examples include PPPoE sessions, 3G/LTE PDP contexts (requiring a SIM card), and VPN links.  By default, all traffic traversing such a link SHOULD be considered to be traversing a boundary.
-
-        ***product-defined interface purposes***
-
-        Defined WAN ports versus LAN or WLAN ports...
-        Note guest SSID here as well...
-
-        ***DHCPv6 PD, IFF...***
-
-        DHCPv6 PD is at this time the most common method for supplying SoHo networks with a routable prefix block.
-
-        If (and only if) a means of distributing prefixes among interior routers is devised that does NOT use DHCPv6 Prefix Delegation, then a link on which DHCPv6 PD succeeded SHOULD be considered an administrative boundary and traffic traversing this interface SHOULD be considered to be traversing a security perimeter.
-
-        If PD is to be used within the interior where a single security policy is desired to be in effect, then this signal is not useful.
-
-        ***on-link neighbor communications***
-
-        Most home networking technology supports two nodes on the same logical link communicating directly.  By default, traffic traversing from such a link to one on which no on-link neighbor discovery and/or communication is permitted, either by design (e.g. a point-to-point link) or administrative choice (e.g. an 802.11 SSID on which the infrastructural access point forbids direct neighbor communications) SHOULD be considered as crossing an administrative boundary and therefore SHOULD be considered as crossing a security perimeter.
-
-        Note that it would be insecure to consider a link on which a default router had disabled on-link determination via flags in the IPv6 RA as changing from security perimeter to interior as such a router may not actually be part of the interior's administrative domain.
-
-        ***authenticated, secure routing protocol***
-
-        Undoubtedly the most reliable method for perimeter detection may be all interfaces a ...
-
-        [two routers each sharing a hub with two upstreams on it]
-
-        Routing protocol could further define security zones so that the rules among interiors and among exteriors could be defined...
+It is desirable to find automated technical mechanisms for broadly defining
+the boundary of a home network.  With a practical trustworthy mechanism a
+default configuration could define the "interior" and the "exterior", usually
+the greater Internet, and apply default security policies to traffic crossing
+borders between the two.
       </t>
     </section>
 
+    <section title="Thoughts">
+      <t>
+This is a non-trivial task as it is tantamount to automated discovery of
+administrative boundaries.
+      </t>
+
+      <t>
+Many architectures fundamentally make it difficult or impossible to detect
+administrative boundaries and rely on various mechanisms of user or
+administrator invention to create or modify such boundaries.  Other hints
+about administrative boundaries are insecure, unreliable, or impractical.
+[router peering and reverse IP DNS delegation examples]
+      </t>
+
+      <t>
+Nevertheless there are some guidelines that may be useful, though it is
+stressed that nothing is likely to be more secure than boundary detection
+by way of authenticated communication protocols (e.g. an authenticated
+interior routing protocol).
+      </t>
+
+      <t>
+This document discusses interfaces, traffic traversing them, whether doing
+so should be considered as crossing a perimeter, and which interfaces are
+"interior" versus "exterior".  There may be multiple interior interfaces as
+well as multiple exterior interfaces.  Notions of perimeter between pairs of
+exterior interfaces are out of scope, as are notions of perimeter between
+multiple interior interfaces (e.g., a home router with wired and "guest"
+wireless networks).
+      </t>
+
+      <section title="Links requiring subscriber information">
+        <t>
+Perhaps the most obvious administrative boundary is a link that requires
+subscriber credentials in order for that link to be "up".  Examples include
+PPPoE sessions, 3G/LTE PDP contexts (requiring a SIM card), and VPN links.
+By default, all traffic traversing such a link SHOULD be considered to be
+traversing a boundary.
+        </t>
+      </section>
+
+      <section title="Product-defined interface purposes">
+        <t>
+Defined WAN ports versus LAN or WLAN ports...
+Note guest SSID here as well...
+        </t>
+      </section>
+
+      <section title="DHCPv6 PD, if and only if...">
+        <t>
+DHCPv6 PD is at this time the most common method for supplying SoHo networks
+with a routable prefix block.
+        </t>
+
+        <t>
+If (and only if) a means of distributing prefixes among interior routers is
+devised that does NOT use DHCPv6 Prefix Delegation, then a link on which
+DHCPv6 PD succeeded SHOULD be considered an administrative boundary and
+traffic traversing this interface SHOULD be considered to be traversing a
+security perimeter.
+        </t>
+
+        <t>
+If PD is to be used within the interior where a single security policy is
+desired to be in effect, then this signal is not useful.
+        </t>
+      </section>
+
+      <section title="on-link neighbor communications">
+        <t>
+Most home networking technology supports two nodes on the same logical link
+communicating directly.  By default, traffic traversing from such a link to
+one on which no on-link neighbor discovery and/or communication is permitted,
+either by design (e.g. a point-to-point link) or administrative choice
+(e.g. an 802.11 SSID on which the infrastructural access point forbids direct
+neighbor communications) SHOULD be considered as crossing an administrative
+boundary and therefore SHOULD be considered as crossing a security perimeter.
+        </t>
+
+        <t>
+Note that it would be insecure to consider a link on which a default router
+had disabled on-link determination via flags in the IPv6 RA as changing from
+security perimeter to interior as such a router may not actually be part of
+the interior's administrative domain.
+        </t>
+      </section>
+
+      <section title="authenticated, secure routing protocol">
+        <t>
+Undoubtedly the most reliable method for perimeter detection may be all
+interfaces that form an authenticated adjacency to...
+
+Discuss: [two routers each sharing a hub with two upstreams on it]
+        </t>
+
+        <t>
+Routing protocol could further define security zones so that the rules among
+interiors and among exteriors could be defined...
+        </t>
+      </section>
+    </section>
+
     <section anchor="simple_list" title="Simple List">
-      <t>List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging',
-      'format'.</t>
+      <t>
+List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging', 'format'.
+      </t>
 
       <t><list style="symbols">
           <t>First bullet</t>
@@ -241,7 +340,8 @@ Examles of interfaces that by default would form a perimeter include PPP, PPPoE,
       significant in figures even if you don't use CDATA.</t>
     </section>
 
-    <!-- This PI places the pagebreak correctly (before the section title) in the text output. -->
+    <!-- This PI places the pagebreak correctly (before the section title)
+         in the text output. -->
 
     <?rfc needLines="8" ?>
 
@@ -292,7 +392,8 @@ Examles of interfaces that by default would form a perimeter include PPP, PPPoE,
           item to start on a new line.</t>
         </list></t>
 
-      <!-- It would be nice to see the next piece (12 lines) all on one page. -->
+      <!-- It would be nice to see the next piece (12 lines) all on one page.
+        -->
 
       <?rfc needLines="12" ?>
 
