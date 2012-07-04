@@ -159,6 +159,9 @@ compromised mobile or fixed neighbor nodes may be used as a conduit for
 further compromise.
       </t>
       <t>
+[Find NAT botnet reference]
+      </t>
+      <t>
 It is recommended that homenet routers administratively log the
 security/interior classification of interfaces, the reason(s) for such
 classification, and times at which such classifications are made or changed.
