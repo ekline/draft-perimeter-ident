@@ -104,7 +104,9 @@ Default Perimeter Identification
          is "Network Working Group", which is used by the RFC Editor as a nod
          to the history of the IETF. -->
 
-    <keyword>template</keyword>
+    <keyword>border</keyword>
+    <keyword>homenet</keyword>
+    <keyword>perimeter</keyword>
 
     <!-- Keywords will be incorporated into HTML output
          files in a meta tag but they have no effect on text or nroff
@@ -162,9 +164,43 @@ further compromise.
 [Find NAT botnet reference]
       </t>
       <t>
-It is recommended that homenet routers administratively log the
-security/interior classification of interfaces, the reason(s) for such
-classification, and times at which such classifications are made or changed.
+Routers compliant with this and other homenet documents SHOULD
+administratively log the security/interior classification of interfaces,
+the reason(s) for such classification, and times at which such
+classifications are made or changed.
+      </t>
+    </section>
+
+    <section title="Physical versus Virtual Interfaces">
+      <t>
+In certain configurations it may be desirable that the perimeter defined on
+a virtual interface also be extended to include the physical interface(s) over
+which such traffic is forwarded/received.  For example, consider a router
+configured with a PPPoE virtual interface on a physical 802.3 interface.  In
+such a configuration, the security policy applied to traffic transitting the
+PPPoE interface should most likely also be applied to non-PPPoE traffic
+transitting the physical interface.  If not, the "interior" region would
+otherwise be logically extended to include the upstream access link.  As there
+is no guaranteed of administrative boundary XXX, a default configuration
+SHOULD consider the physical interface a perimeter.
+      </t>
+
+      <t>
+By way of contrast, consider an entirely interior router which also has a
+VPN interface, through which traffic may be passed to, say, a resident's
+company network.  While a VPN virtual interface SHOULD be considered a
+logical demarcation point, the physical interface through which
+VPN-encapsulated traffic is transmitted need not necessarily be classified
+as such.  Instead, what may be desired is that traffic to/from interfaces that
+are interior to this VPN-enabled router may pass through either the VPN
+interface or any "upstream" interfaces, but traffic originating from "upstream"
+interfaces may be default DENIED transit through the VPN interface.  While
+this situation may be far from the norm for networks, it nevertheless affords
+the maintenance of a simple mental model of a hierarchical network.
+      </t>
+
+      <t>
+XXX
       </t>
     </section>
 
