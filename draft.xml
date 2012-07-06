@@ -202,17 +202,23 @@ wireless networks).
       <section title="Links requiring subscriber information">
         <t>
 Perhaps the most obvious administrative boundary is a link that requires
-subscriber credentials in order for that link to be "up".  Examples include
-PPPoE sessions, 3G/LTE PDP contexts (requiring a SIM card), and VPN links.
-By default, all traffic traversing such a link SHOULD be considered to be
-traversing a boundary.
+subscriber credentials in order for that link to successfully forward and
+receive general traffic.  Examples include authenticated PPPoE sessions,
+3G/LTE PDP contexts (requiring a SIM card associated with a customer account),
+and authenticated VPN links.  By default, all traffic traversing such a link
+SHOULD be considered to be traversing a boundary.
         </t>
       </section>
 
       <section title="Product-defined interface purposes">
         <t>
-Defined WAN ports versus LAN or WLAN ports...
-Note guest SSID here as well...
+Many products come with interfaces labeled with their intended use.  Examples
+include home routers with RJ-45 ports labeled "WAN" and "LAN", or perhaps
+with symbols indicating "The Internet" and "inside the home".  Other examples
+include wireless routers with defined WLAN and "Guest" ESSIDs.  In such cases
+where concepts of "interior" and "exterior" are clearly implied a homenet
+router SHOULD by default consider traffic forwarded between interfaces of
+differing regions as traversing a boundary.
         </t>
       </section>
 
@@ -248,6 +254,11 @@ boundary and therefore SHOULD be considered as crossing a security perimeter.
         </t>
 
         <t>
+Discuss: same for tunneled protocols where "point-to-point" isn't necessarily
+a requirement, e.g. 6to4.
+        </t>
+
+        <t>
 Note that it would be insecure to consider a link on which a default router
 had disabled on-link determination via flags in the IPv6 RA as changing from
 security perimeter to interior as such a router may not actually be part of
@@ -266,6 +277,12 @@ Discuss: [two routers each sharing a hub with two upstreams on it]
         <t>
 Routing protocol could further define security zones so that the rules among
 interiors and among exteriors could be defined...
+        </t>
+
+        <t>
+Discuss: applying the policy to the entire interface for some "infrastructural"
+connections (e.g. PPPoE).  Virtual link versus physical link, virtual interface
+versus physical interface.
         </t>
       </section>
     </section>
