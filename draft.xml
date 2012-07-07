@@ -151,6 +151,11 @@ perimeter is out of scope of this document.
       </section>
     </section>
 
+    <section title="Terminology">
+      <t>
+      </t>
+    </section>
+
     <section title="Disclaimers">
       <t>
 By default all nodes should follows best current security practices.  All
@@ -200,7 +205,11 @@ the maintenance of a simple mental model of a hierarchical network.
       </t>
 
       <t>
-XXX
+To address these uses, by default the physical interface(s) through which
+a virtual interface's traffic is forward should also be considered a
+perimeter, unless other means determine that it is in fact an interior
+interface.  Note that in all cases such a virtual interface is considered
+a perimeter.
       </t>
     </section>
 

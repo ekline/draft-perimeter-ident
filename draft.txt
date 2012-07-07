@@ -3,8 +3,8 @@
 
 Internet Engineering Task Force                                 E. Kline
 Internet-Draft                                               Google Inc.
-Intended status: Informational                              July 6, 2012
-Expires: January 7, 2013
+Intended status: Informational                              July 7, 2012
+Expires: January 8, 2013
 
 
                     Default Perimeter Identification
@@ -33,7 +33,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 7, 2013.
+   This Internet-Draft will expire on January 8, 2013.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Kline                    Expires January 7, 2013                [Page 1]
+Kline                    Expires January 8, 2013                [Page 1]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
@@ -61,30 +61,31 @@ Table of Contents
 
    1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  3
      1.1.  Requirements Language  . . . . . . . . . . . . . . . . . .  3
-   2.  Disclaimers  . . . . . . . . . . . . . . . . . . . . . . . . .  3
-   3.  Physical versus Virtual Interfaces . . . . . . . . . . . . . .  3
-   4.  Thoughts . . . . . . . . . . . . . . . . . . . . . . . . . . .  4
-     4.1.  Links requiring subscriber information . . . . . . . . . .  5
-     4.2.  Product-defined interface purposes . . . . . . . . . . . .  5
-     4.3.  DHCPv6 PD, if and only if... . . . . . . . . . . . . . . .  5
-     4.4.  on-link neighbor communications  . . . . . . . . . . . . .  5
-     4.5.  authenticated, secure routing protocol . . . . . . . . . .  6
-   5.  Ignore these old scribblings . . . . . . . . . . . . . . . . .  6
-   6.  Simple List  . . . . . . . . . . . . . . . . . . . . . . . . .  7
-   7.  Figures  . . . . . . . . . . . . . . . . . . . . . . . . . . .  7
-   8.  Subsections and Tables . . . . . . . . . . . . . . . . . . . .  7
-     8.1.  A Subsection . . . . . . . . . . . . . . . . . . . . . . .  7
-     8.2.  Tables . . . . . . . . . . . . . . . . . . . . . . . . . .  8
-   9.  More about Lists . . . . . . . . . . . . . . . . . . . . . . .  8
-     9.1.  Numbering Lists across Lists and Sections  . . . . . . . .  9
-     9.2.  Where the List Numbering Continues . . . . . . . . . . . .  9
-   10. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . .  9
-   11. IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 10
-   12. Security Considerations  . . . . . . . . . . . . . . . . . . . 10
-   13. References . . . . . . . . . . . . . . . . . . . . . . . . . . 10
-     13.1. Normative References . . . . . . . . . . . . . . . . . . . 10
-     13.2. Informative References . . . . . . . . . . . . . . . . . . 10
-   Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 10
+   2.  Terminology  . . . . . . . . . . . . . . . . . . . . . . . . .  3
+   3.  Disclaimers  . . . . . . . . . . . . . . . . . . . . . . . . .  3
+   4.  Physical versus Virtual Interfaces . . . . . . . . . . . . . .  3
+   5.  Thoughts . . . . . . . . . . . . . . . . . . . . . . . . . . .  4
+     5.1.  Links requiring subscriber information . . . . . . . . . .  5
+     5.2.  Product-defined interface purposes . . . . . . . . . . . .  5
+     5.3.  DHCPv6 PD, if and only if... . . . . . . . . . . . . . . .  5
+     5.4.  on-link neighbor communications  . . . . . . . . . . . . .  6
+     5.5.  authenticated, secure routing protocol . . . . . . . . . .  6
+   6.  Ignore these old scribblings . . . . . . . . . . . . . . . . .  6
+   7.  Simple List  . . . . . . . . . . . . . . . . . . . . . . . . .  7
+   8.  Figures  . . . . . . . . . . . . . . . . . . . . . . . . . . .  7
+   9.  Subsections and Tables . . . . . . . . . . . . . . . . . . . .  8
+     9.1.  A Subsection . . . . . . . . . . . . . . . . . . . . . . .  8
+     9.2.  Tables . . . . . . . . . . . . . . . . . . . . . . . . . .  8
+   10. More about Lists . . . . . . . . . . . . . . . . . . . . . . .  8
+     10.1. Numbering Lists across Lists and Sections  . . . . . . . .  9
+     10.2. Where the List Numbering Continues . . . . . . . . . . . .  9
+   11. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 10
+   12. IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 10
+   13. Security Considerations  . . . . . . . . . . . . . . . . . . . 10
+   14. References . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+     14.1. Normative References . . . . . . . . . . . . . . . . . . . 10
+     14.2. Informative References . . . . . . . . . . . . . . . . . . 11
+   Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 11
    Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 11
 
 
@@ -107,8 +108,7 @@ Table of Contents
 
 
 
-
-Kline                    Expires January 7, 2013                [Page 2]
+Kline                    Expires January 8, 2013                [Page 2]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
@@ -138,7 +138,10 @@ Internet-Draft      Default Perimeter Identification           July 2012
    document are to be interpreted as described in RFC 2119 [RFC2119].
 
 
-2.  Disclaimers
+2.  Terminology
+
+
+3.  Disclaimers
 
    By default all nodes should follows best current security practices.
    All nodes may at times find themselves in hostile environments.  This
@@ -155,20 +158,20 @@ Internet-Draft      Default Perimeter Identification           July 2012
    such classifications are made or changed.
 
 
-3.  Physical versus Virtual Interfaces
+4.  Physical versus Virtual Interfaces
 
    In certain configurations it may be desirable that the perimeter
-   defined on a virtual interface also be extended to include the
-   physical interface(s) over which such traffic is forwarded/received.
-   For example, consider a router configured with a PPPoE virtual
 
 
 
-Kline                    Expires January 7, 2013                [Page 3]
+Kline                    Expires January 8, 2013                [Page 3]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
 
+   defined on a virtual interface also be extended to include the
+   physical interface(s) over which such traffic is forwarded/received.
+   For example, consider a router configured with a PPPoE virtual
    interface on a physical 802.3 interface.  In such a configuration,
    the security policy applied to traffic transitting the PPPoE
    interface should most likely also be applied to non-PPPoE traffic
@@ -192,10 +195,14 @@ Internet-Draft      Default Perimeter Identification           July 2012
    affords the maintenance of a simple mental model of a hierarchical
    network.
 
-   XXX
+   To address these uses, by default the physical interface(s) through
+   which a virtual interface's traffic is forward should also be
+   considered a perimeter, unless other means determine that it is in
+   fact an interior interface.  Note that in all cases such a virtual
+   interface is considered a perimeter.
 
 
-4.  Thoughts
+5.  Thoughts
 
    This is a non-trivial task as it is tantamount to automated discovery
    of administrative boundaries.
@@ -210,6 +217,14 @@ Internet-Draft      Default Perimeter Identification           July 2012
    Nevertheless there are some guidelines that may be useful, though it
    is stressed that nothing is likely to be more secure than boundary
    detection by way of authenticated communication protocols (e.g. an
+
+
+
+Kline                    Expires January 8, 2013                [Page 4]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
    authenticated interior routing protocol).
 
    This document discusses interfaces, traffic traversing them, whether
@@ -217,18 +232,10 @@ Internet-Draft      Default Perimeter Identification           July 2012
    interfaces are "interior" versus "exterior".  There may be multiple
    interior interfaces as well as multiple exterior interfaces.  Notions
    of perimeter between pairs of exterior interfaces are out of scope,
-
-
-
-Kline                    Expires January 7, 2013                [Page 4]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
    as are notions of perimeter between multiple interior interfaces
    (e.g., a home router with wired and "guest" wireless networks).
 
-4.1.  Links requiring subscriber information
+5.1.  Links requiring subscriber information
 
    Perhaps the most obvious administrative boundary is a link that
    requires subscriber credentials in order for that link to
@@ -238,7 +245,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    links.  By default, all traffic traversing such a link SHOULD be
    considered to be traversing a boundary.
 
-4.2.  Product-defined interface purposes
+5.2.  Product-defined interface purposes
 
    Many products come with interfaces labeled with their intended use.
    Examples include home routers with RJ-45 ports labeled "WAN" and
@@ -249,7 +256,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    consider traffic forwarded between interfaces of differing regions as
    traversing a boundary.
 
-4.3.  DHCPv6 PD, if and only if...
+5.3.  DHCPv6 PD, if and only if...
 
    DHCPv6 PD is at this time the most common method for supplying SoHo
    networks with a routable prefix block.
@@ -263,7 +270,18 @@ Internet-Draft      Default Perimeter Identification           July 2012
    If PD is to be used within the interior where a single security
    policy is desired to be in effect, then this signal is not useful.
 
-4.4.  on-link neighbor communications
+
+
+
+
+
+
+Kline                    Expires January 8, 2013                [Page 5]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
+5.4.  on-link neighbor communications
 
    Most home networking technology supports two nodes on the same
    logical link communicating directly.  By default, traffic traversing
@@ -274,13 +292,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    SHOULD be considered as crossing an administrative boundary and
    therefore SHOULD be considered as crossing a security perimeter.
 
-
-
-Kline                    Expires January 7, 2013                [Page 5]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
    Discuss: same for tunneled protocols where "point-to-point" isn't
    necessarily a requirement, e.g. 6to4.
 
@@ -289,7 +300,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    changing from security perimeter to interior as such a router may not
    actually be part of the interior's administrative domain.
 
-4.5.  authenticated, secure routing protocol
+5.5.  authenticated, secure routing protocol
 
    Undoubtedly the most reliable method for perimeter detection may be
    all interfaces that form an authenticated adjacency to...  Discuss:
@@ -303,7 +314,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    physical link, virtual interface versus physical interface.
 
 
-5.  Ignore these old scribblings
+6.  Ignore these old scribblings
 
    Assumptions include:
 
@@ -318,6 +329,14 @@ Internet-Draft      Default Perimeter Identification           July 2012
    LLN if the forwarding device in question is, say, a 6LBR), or via
    interfaces from which a prefix has been delegated via DHCPv6-PD, or
    via interfaces which have NO RFC3484(bis) global scope addresses of
+
+
+
+Kline                    Expires January 8, 2013                [Page 6]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
    the same family as the passing traffic, or via next-hops which are
    NOT participating in an authenticated routing domain, when an
    authenticated routing domain is otherwise in use, MUST be considered
@@ -329,14 +348,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    considered as crossing a perimeter.  [PPPTUN] By default, unless
    manually configured otherwise, traffic received or to be sent via
    interfaces which are point-to-point in nature or are tunnel/
-
-
-
-Kline                    Expires January 7, 2013                [Page 6]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
    encapsulated interfaces SHOULD be considered as crossing a perimeter.
    Examles of interfaces that by default would form a perimeter include
    PPP, PPPoE, PPPoA, L2TP tunnel interfaces, and typical VPN
@@ -344,7 +355,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    interfaces.
 
 
-6.  Simple List
+7.  Simple List
 
    List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging',
    'format'.
@@ -356,7 +367,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    You can write text here as well.
 
 
-7.  Figures
+8.  Figures
 
    Figures should not exceed 69 characters wide to allow for the indent
    of sections.
@@ -374,26 +385,26 @@ Internet-Draft      Default Perimeter Identification           July 2012
    The CDATA means you don't need to escape meta-characters (especially
    < (&lt;) and & (&amp;)) but is not essential.  Figures may also have
    a title attribute but it won't be displayed unless there is also an
-   anchor.  White space, both horizontal and vertical, is significant in
-   figures even if you don't use CDATA.
-
-
-8.  Subsections and Tables
-
-8.1.  A Subsection
-
-   By default 3 levels of nesting show in table of contents but that can
-   be adjusted with the value of the "tocdepth" processing instruction.
 
 
 
-
-Kline                    Expires January 7, 2013                [Page 7]
+Kline                    Expires January 8, 2013                [Page 7]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
 
-8.2.  Tables
+   anchor.  White space, both horizontal and vertical, is significant in
+   figures even if you don't use CDATA.
+
+
+9.  Subsections and Tables
+
+9.1.  A Subsection
+
+   By default 3 levels of nesting show in table of contents but that can
+   be adjusted with the value of the "tocdepth" processing instruction.
+
+9.2.  Tables
 
    .. are very similar to figures:
 
@@ -413,7 +424,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
                        Table 1: A Very Simple Table
 
 
-9.  More about Lists
+10.  More about Lists
 
    Lists with 'hanging labels': the list item is indented the amount of
    the hangIndent:
@@ -424,6 +435,19 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
    vspace_trick
            Forces the new item to start on a new line.
+
+
+
+
+
+
+
+
+
+Kline                    Expires January 8, 2013                [Page 8]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
 
    Simulating more than one paragraph in a list item using <vspace>:
 
@@ -438,18 +462,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
              The quick, brown fox jumped over the lazy dog and lived to
              fool many another hunter in the great wood in the west.
 
-
-
-
-
-
-
-Kline                    Expires January 7, 2013                [Page 8]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
-9.1.  Numbering Lists across Lists and Sections
+10.1.  Numbering Lists across Lists and Sections
 
    Numbering items continuously although they are in separate <list>
    elements, maybe in separate sections using the "format" style and a
@@ -473,13 +486,24 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
    R6  #6
 
-9.2.  Where the List Numbering Continues
+10.2.  Where the List Numbering Continues
 
    List continues here.
 
    Third list:
 
    R7   #7
+
+
+
+
+
+
+
+Kline                    Expires January 8, 2013                [Page 9]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
 
    R8   #8
 
@@ -490,7 +514,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    The end of the list.
 
 
-10.  Acknowledgements
+11.  Acknowledgements
 
    This template was derived from an initial version written by Pekka
    Savola and contributed by him to the xml2rfc project.
@@ -499,13 +523,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    [DOMINATION].
 
 
-
-Kline                    Expires January 7, 2013                [Page 9]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
-11.  IANA Considerations
+12.  IANA Considerations
 
    This memo includes no request to IANA.
 
@@ -517,22 +535,33 @@ Internet-Draft      Default Perimeter Identification           July 2012
    will be removed during conversion into an RFC by the RFC Editor.
 
 
-12.  Security Considerations
+13.  Security Considerations
 
    All drafts are required to have a security considerations section.
    See RFC 3552 [RFC3552] for a guide.
 
 
-13.  References
+14.  References
 
-13.1.  Normative References
+14.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
    [min_ref]  authSurName, authInitials., "Minimal Reference", 2006.
 
-13.2.  Informative References
+
+
+
+
+
+
+Kline                    Expires January 8, 2013               [Page 10]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
+14.2.  Informative References
 
    [DOMINATION]
               Mad Dominators, Inc., "Ultimate Plan for Taking Over the
@@ -550,15 +579,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
 Appendix A.  Additional Stuff
 
    This becomes an Appendix.
-
-
-
-
-
-
-Kline                    Expires January 7, 2013               [Page 10]
-
-Internet-Draft      Default Perimeter Identification           July 2012
 
 
 Author's Address
@@ -592,25 +612,5 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kline                    Expires January 7, 2013               [Page 11]
+Kline                    Expires January 8, 2013               [Page 11]
 
