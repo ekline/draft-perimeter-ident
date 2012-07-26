@@ -92,7 +92,7 @@ Table of Contents
      14.1. Normative References . . . . . . . . . . . . . . . . . . . 12
      14.2. Informative References . . . . . . . . . . . . . . . . . . 12
    Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 12
-   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 13
+   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 12
 
 
 
@@ -607,20 +607,14 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
    This memo includes no request to IANA.
 
-   All drafts are required to have an IANA considerations section (see
-   Guidelines for Writing an IANA Considerations Section in RFCs
+
+
 
 
 
 Kline                   Expires January 27, 2013               [Page 11]
 
 Internet-Draft      Default Perimeter Identification           July 2012
-
-
-   [RFC5226] for a guide).  If the draft does not require IANA to do
-   anything, the section contains an explicit statement that this is the
-   case (as above).  If there are no requirements for IANA, the section
-   will be removed during conversion into an RFC by the RFC Editor.
 
 
 13.  Security Considerations
@@ -652,10 +646,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
               E. Klein, "Local Network Protection for IPv6", RFC 4864,
               May 2007.
 
-   [RFC5226]  Narten, T. and H. Alvestrand, "Guidelines for Writing an
-              IANA Considerations Section in RFCs", BCP 26, RFC 5226,
-              May 2008.
-
    [TORPIG]   Stone-Gross, B., "Your Botnet is My Botnet: Analysis of a
               Botnet Takeover", 2009, <http://www.cs.ucsb.edu/~seclab/
               projects/torpig/torpig.pdf>.
@@ -664,6 +654,16 @@ Internet-Draft      Default Perimeter Identification           July 2012
 Appendix A.  Additional Stuff
 
    This becomes an Appendix.
+
+
+
+
+
+
+
+
+
+
 
 
 
