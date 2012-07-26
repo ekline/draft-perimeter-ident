@@ -175,20 +175,22 @@ has been limited to discussing concepts of "interior", "exterior", and
           <t hangText="Interior">
           <vspace blankLines="0" />
 The interior is broadly defined to include the collection of interfaces
-(physical or virtual), nodes, and traffic collectively under the control
-of a single logical administrative domain.
+(physical or virtual), nodes, and forwarding next-hops collectively under the
+control of a single logical administrative domain.
           </t>
+
           <t hangText="Exterior">
           <vspace blankLines="0" />
 The exterior is broadly defined to include all interfaces (physical or virtual),
-nodes, and traffic collectively NOT under the control of any single logical
-administrative domain and specifically NOT under the control of the
-administrative domain which defines the interior.
+nodes, and forwarding next-hops collectively NOT under the control of any
+single logical administrative domain and specifically NOT under the control
+of the administrative domain which defines the interior.
           </t>
+
           <t hangText="Perimeter">
           <vspace blankLines="0" />
 The perimeter is taken to be the collection of all ephemeral demarcations
-within the collection of interfaces (physical or virtual) such that any IP
+within the collection of interior nodes which forward traffic such that any IP
 packet transiting that demarcation can be said to be crossing either from the
 interior toward the exterior or from the exterior toward the interior.  This
 is independent of whether or not such traffic is permitted by policy to
@@ -209,6 +211,13 @@ The definition of perimeter is such that, for example, an IP packet arriving
 on a NAT device's interior interface that is "hairpinned" and retransmitted
 out the interior interface is not considered to have touched nor crossed
 the perimeter.
+      </t>
+
+      <t>
+The definition of perimeter as written technically permits traffic being
+forwarded over an interface to be classified as transiting a perimeter or
+not based on the classification of the next-hop.  The implications of this
+are discussed in TBD.
       </t>
     </section>
 
@@ -231,6 +240,7 @@ hosts had <xref target="RFC1918">RFC 1918</xref> addresses, commmonly used in
 IPv4 NAT deployments.
         </t>
       </section>
+
       <section title="Logging">
         <t>
 Nodes compliant with this and other homenet documents SHOULD administratively
@@ -289,6 +299,45 @@ E.g. Teredo, 6to4, 6rd, 4rd, PPTP/L2TP tunnels, ...
         </t>
       </section>
 
+      <section title="Routing adjacency">
+        <t>
+authenticated, secure
+Undoubtedly the most reliable method for perimeter detection may be all
+interfaces that form an authenticated adjacency to...
+
+Discuss: [two routers each sharing a hub with two upstreams on it]
+        </t>
+
+        <t>
+Routing protocol could further define security zones so that the rules among
+interiors and among exteriors could be defined...
+        </t>
+      </section>
+
+      <section title="on-link neighbor communications">
+        <t>
+Most home networking technology supports two nodes on the same logical link
+communicating directly.  By default, traffic traversing from such a link to
+one on which no on-link neighbor discovery and/or communication is permitted,
+either by design (e.g. a point-to-point link) or administrative choice
+(e.g. an 802.11 SSID on which the infrastructural access point forbids direct
+neighbor communications) SHOULD be considered as crossing an administrative
+boundary and therefore SHOULD be considered as crossing a security perimeter.
+        </t>
+
+        <t>
+Discuss: same for tunneled protocols where "point-to-point" isn't necessarily
+a requirement, e.g. 6to4.
+        </t>
+
+        <t>
+Note that it would be insecure to consider a link on which a default router
+had disabled on-link determination via flags in the IPv6 RA as changing from
+security perimeter to interior as such a router may not actually be part of
+the interior's administrative domain.
+        </t>
+      </section>
+
       <section title="Product-defined interface purposes">
         <t>
 Many products come with interfaces labeled with their intended use.  Examples
@@ -320,54 +369,11 @@ If PD is to be used within the interior where a single security policy is
 desired to be in effect, then this signal is not useful.
         </t>
       </section>
-
-      <section title="on-link neighbor communications">
-        <t>
-Most home networking technology supports two nodes on the same logical link
-communicating directly.  By default, traffic traversing from such a link to
-one on which no on-link neighbor discovery and/or communication is permitted,
-either by design (e.g. a point-to-point link) or administrative choice
-(e.g. an 802.11 SSID on which the infrastructural access point forbids direct
-neighbor communications) SHOULD be considered as crossing an administrative
-boundary and therefore SHOULD be considered as crossing a security perimeter.
-        </t>
-
-        <t>
-Discuss: same for tunneled protocols where "point-to-point" isn't necessarily
-a requirement, e.g. 6to4.
-        </t>
-
-        <t>
-Note that it would be insecure to consider a link on which a default router
-had disabled on-link determination via flags in the IPv6 RA as changing from
-security perimeter to interior as such a router may not actually be part of
-the interior's administrative domain.
-        </t>
-      </section>
-
-      <section title="authenticated, secure routing protocol">
-        <t>
-Undoubtedly the most reliable method for perimeter detection may be all
-interfaces that form an authenticated adjacency to...
-
-Discuss: [two routers each sharing a hub with two upstreams on it]
-        </t>
-
-        <t>
-Routing protocol could further define security zones so that the rules among
-interiors and among exteriors could be defined...
-        </t>
-
-        <t>
-Discuss: applying the policy to the entire interface for some "infrastructural"
-connections (e.g. PPPoE).  Virtual link versus physical link, virtual interface
-versus physical interface.
-        </t>
-      </section>
     </section>
 
-    <section title="Physical versus Virtual Interfaces">
-      <t>
+    <section title="Additional considerations">
+      <section title="Physical vs virtual interfaces">
+        <t>
 In certain configurations it may be desirable that the perimeter defined on
 a virtual interface also be extended to include the physical interface(s) over
 which such traffic is forwarded/received.  For example, consider a router
@@ -378,9 +384,9 @@ transitting the physical interface.  If not, the "interior" region would
 otherwise be logically extended to include the upstream access link.  As there
 is no guaranteed of administrative boundary XXX, a default configuration
 SHOULD consider the physical interface a perimeter.
-      </t>
+        </t>
 
-      <t>
+        <t>
 By way of contrast, consider an entirely interior router which also has a
 VPN interface, through which traffic may be passed to, say, a resident's
 company network.  While a VPN virtual interface SHOULD be considered a
@@ -392,15 +398,35 @@ interface or any "upstream" interfaces, but traffic originating from "upstream"
 interfaces may be default DENIED transit through the VPN interface.  While
 this situation may be far from the norm for networks, it nevertheless affords
 the maintenance of a simple mental model of a hierarchical network.
-      </t>
+        </t>
 
-      <t>
+        <t>
 To address these uses, by default the physical interface(s) through which
 a virtual interface's traffic is forward should also be considered a
 perimeter, unless other means determine that it is in fact an interior
 interface.  Note that in all cases such a virtual interface is considered
 a perimeter.
-      </t>
+        </t>
+
+        <t>
+Discuss: applying the policy to the entire interface for some "infrastructural"
+connections (e.g. PPPoE).  Virtual link versus physical link, virtual interface
+versus physical interface.
+        </t>
+      </section>
+
+      <section title="Mixed zone next-hops on the same interface">
+        <t>
+By default, if one then all.
+        </t>
+      </section>
+
+      <section title="Perimeter and address families">
+        <t>
+Same in IPvv4 and IPv6.  Anything else will violate principle of least
+surprise, and may lead to a deployment in an insecure configuration.
+        </t>
+      </section>
     </section>
 
     <section title="Ignore these old scribblings">
@@ -628,17 +654,17 @@ main(int argc, char *argv[])
     </section>
 -->
 
+    <!-- Possibly a 'Contributors' section ... -->
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>
 The author gratefully acknowledges the constructive input and criticism of
 Lorenzo Colitti, Mark Townsley, and Ole Troan.
-     </t>
-
-      <t>This document is part of a plan to make xml2rfc indispensable <xref
-      target="DOMINATION"></xref>.</t>
+      </t>
+      <t>
+Thanks also must go to pleasant, peaceful and productive trips on the
+Japan Rail (JR) Shinkansen ("bullet train").
+      </t>
     </section>
-
-    <!-- Possibly a 'Contributors' section ... -->
 
     <section anchor="IANA" title="IANA Considerations">
       <t>This memo includes no request to IANA.</t>
@@ -694,7 +720,6 @@ Lorenzo Colitti, Mark Townsley, and Ole Troan.
     <references title="Informative References">
       <!-- Here we use entities that we defined at the beginning. -->
 
-
       &RFC1918;
 
       &RFC3552;
@@ -717,46 +742,10 @@ Your Botnet is My Botnet: Analysis of a Botnet Takeover
           <date year="2009" />
         </front>
       </reference>
-
-      <!-- A reference written by by an organization not a person. -->
-
-      <reference anchor="DOMINATION"
-                 target="http://www.example.com/dominator.html">
-        <front>
-          <title>Ultimate Plan for Taking Over the World</title>
-
-          <author>
-            <organization>Mad Dominators, Inc.</organization>
-          </author>
-
-          <date year="1984" />
-        </front>
-      </reference>
     </references>
 
     <section anchor="app-additional" title="Additional Stuff">
       <t>This becomes an Appendix.</t>
     </section>
-
-    <!-- Change Log
-
-v00 2006-03-15  EBD   Initial version
-
-v01 2006-04-03  EBD   Moved PI location back to position 1 -
-                      v3.1 of XMLmind is better with them at this location.
-v02 2007-03-07  AH    removed extraneous nested_list attribute,
-                      other minor corrections
-v03 2007-03-09  EBD   Added comments on null IANA sections and fixed heading capitalization.
-                      Modified comments around figure to reflect non-implementation of
-                      figure indent control.  Put in reference using anchor="DOMINATION".
-                      Fixed up the date specification comments to reflect current truth.
-v04 2007-03-09 AH     Major changes: shortened discussion of PIs,
-                      added discussion of rfc include.
-v05 2007-03-10 EBD    Added preamble to C program example to tell about ABNF and alternative
-                      images. Removed meta-characters from comments (causes problems).
-
-v06 2010-04-01 TT     Changed ipr attribute values to latest ones. Changed date to
-                      year only, to be consistent with the comments. Updated the
-                      IANA guidelines reference from the I-D to the finished RFC.  -->
   </back>
 </rfc>
