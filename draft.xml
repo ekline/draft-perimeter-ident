@@ -150,8 +150,9 @@ perimeter.
       </t>
       <t>
 Specifying a policy that should be applied to traffic crossing this
-perimeter is out of scope of this document.  Implementors are reminded to be
-mindful of best current practices, e.g. <xref target="RFC4864">RFC 4864</xref>.
+perimeter is out of scope of this document.  Implementors should remain
+mindful of recommended practices, e.g. <xref target="RFC4864">RFC 4864</xref>,
+et cetera.
      </t>
 
       <section title="Requirements Language">
@@ -164,6 +165,50 @@ mindful of best current practices, e.g. <xref target="RFC4864">RFC 4864</xref>.
 
     <section title="Terminology">
       <t>
+In order to address perimeter identification at a manageable scale the scope
+has been limited to discussing concepts of "interior", "exterior", and
+"perimeter".  Working definitions in use by this document are as follows.
+      </t>
+
+      <t>
+        <list hangIndent="8" style="hanging">
+          <t hangText="Interior">
+          <vspace blankLines="0" />
+The interior is broadly defined to include the collection of interfaces
+(physical or virtual), nodes, and traffic collectively under the control
+of a single logical administrative domain.
+          </t>
+          <t hangText="Exterior">
+          <vspace blankLines="0" />
+The exterior is broadly defined to include all interfaces (physical or virtual),
+nodes, and traffic collectively NOT under the control of any single logical
+administrative domain and specifically NOT under the control of the
+administrative domain which defines the interior.
+          </t>
+          <t hangText="Perimeter">
+          <vspace blankLines="0" />
+The perimeter is taken to be the collection of all ephemeral demarcations
+within the collection of interfaces (physical or virtual) such that any IP
+packet transiting that demarcation can be said to be crossing either from the
+interior toward the exterior or from the exterior toward the interior.  This
+is independent of whether or not such traffic is permitted by policy to
+complete its transiting from one zone to the other.
+          </t>
+        </list>
+      </t>
+
+      <t>
+Expressly not discussed herein are concepts of multiple interior networks,
+nor any relationships between them as separate from their relationship to
+their common exterior or any common perimeter.  The architectures under
+discussion have a single interior, single exterior, and a single perimeter.
+      </t>
+
+      <t>
+The definition of perimeter is such that, for example, an IP packet arriving
+on a NAT device's interior interface that is "hairpinned" and retransmitted
+out the interior interface is not considered to have touched nor crossed
+the perimeter.
       </t>
     </section>
 
@@ -196,44 +241,7 @@ are made or changed.
       </section>
     </section>
 
-    <section title="Physical versus Virtual Interfaces">
-      <t>
-In certain configurations it may be desirable that the perimeter defined on
-a virtual interface also be extended to include the physical interface(s) over
-which such traffic is forwarded/received.  For example, consider a router
-configured with a PPPoE virtual interface on a physical 802.3 interface.  In
-such a configuration, the security policy applied to traffic transitting the
-PPPoE interface should most likely also be applied to non-PPPoE traffic
-transitting the physical interface.  If not, the "interior" region would
-otherwise be logically extended to include the upstream access link.  As there
-is no guaranteed of administrative boundary XXX, a default configuration
-SHOULD consider the physical interface a perimeter.
-      </t>
-
-      <t>
-By way of contrast, consider an entirely interior router which also has a
-VPN interface, through which traffic may be passed to, say, a resident's
-company network.  While a VPN virtual interface SHOULD be considered a
-logical demarcation point, the physical interface through which
-VPN-encapsulated traffic is transmitted need not necessarily be classified
-as such.  Instead, what may be desired is that traffic to/from interfaces that
-are interior to this VPN-enabled router may pass through either the VPN
-interface or any "upstream" interfaces, but traffic originating from "upstream"
-interfaces may be default DENIED transit through the VPN interface.  While
-this situation may be far from the norm for networks, it nevertheless affords
-the maintenance of a simple mental model of a hierarchical network.
-      </t>
-
-      <t>
-To address these uses, by default the physical interface(s) through which
-a virtual interface's traffic is forward should also be considered a
-perimeter, unless other means determine that it is in fact an interior
-interface.  Note that in all cases such a virtual interface is considered
-a perimeter.
-      </t>
-    </section>
-
-    <section title="Thoughts">
+    <section title="Useful perimeter signals">
       <t>
 This is a non-trivial task as it is tantamount to automated discovery of
 administrative boundaries.
@@ -272,6 +280,12 @@ receive general traffic.  Examples include authenticated PPPoE sessions,
 3G/LTE PDP contexts (requiring a SIM card associated with a customer account),
 and authenticated VPN links.  By default, all traffic traversing such a link
 SHOULD be considered to be traversing a boundary.
+        </t>
+      </section>
+
+      <section title="Links requiring existing IP-layer connectivity">
+        <t>
+E.g. Teredo, 6to4, 6rd, 4rd, PPTP/L2TP tunnels, ...
         </t>
       </section>
 
@@ -350,6 +364,43 @@ connections (e.g. PPPoE).  Virtual link versus physical link, virtual interface
 versus physical interface.
         </t>
       </section>
+    </section>
+
+    <section title="Physical versus Virtual Interfaces">
+      <t>
+In certain configurations it may be desirable that the perimeter defined on
+a virtual interface also be extended to include the physical interface(s) over
+which such traffic is forwarded/received.  For example, consider a router
+configured with a PPPoE virtual interface on a physical 802.3 interface.  In
+such a configuration, the security policy applied to traffic transitting the
+PPPoE interface should most likely also be applied to non-PPPoE traffic
+transitting the physical interface.  If not, the "interior" region would
+otherwise be logically extended to include the upstream access link.  As there
+is no guaranteed of administrative boundary XXX, a default configuration
+SHOULD consider the physical interface a perimeter.
+      </t>
+
+      <t>
+By way of contrast, consider an entirely interior router which also has a
+VPN interface, through which traffic may be passed to, say, a resident's
+company network.  While a VPN virtual interface SHOULD be considered a
+logical demarcation point, the physical interface through which
+VPN-encapsulated traffic is transmitted need not necessarily be classified
+as such.  Instead, what may be desired is that traffic to/from interfaces that
+are interior to this VPN-enabled router may pass through either the VPN
+interface or any "upstream" interfaces, but traffic originating from "upstream"
+interfaces may be default DENIED transit through the VPN interface.  While
+this situation may be far from the norm for networks, it nevertheless affords
+the maintenance of a simple mental model of a hierarchical network.
+      </t>
+
+      <t>
+To address these uses, by default the physical interface(s) through which
+a virtual interface's traffic is forward should also be considered a
+perimeter, unless other means determine that it is in fact an interior
+interface.  Note that in all cases such a virtual interface is considered
+a perimeter.
+      </t>
     </section>
 
     <section title="Ignore these old scribblings">
