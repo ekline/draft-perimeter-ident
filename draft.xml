@@ -120,7 +120,8 @@ Default Perimeter Identification
 Automatic, simple identification of when traffic is crossing a perimeter
 is highly desirable for a variety of home network uses.  This document
 proposes a set of default tests to be applied to traffic scheduled for
-forwarding, which can be used collectively to identify this perimeter.
+forwarding, which can be used collectively to identify this perimeter in
+some (but not all) environments.
       </t>
     </abstract>
   </front>
@@ -134,10 +135,10 @@ proposes a set of default tests to be applied to traffic scheduled for
 forwarding, which can be used collectively to identify this perimeter.
       </t>
       <t>
-Of note are several limitations introduced by the use of "native"-style
-Internet access methods.  By design these architectures make it difficult at
-best to distinguish any difference between a LAN port in an enterprise and a
-home Internet connection.
+Of note are limitations introduced by the ubiquitous use of IP over Ethernet
+(IPoE) Internet access methods.  By design these architectures make it
+difficult (at best) to distinguish any difference between a LAN port in an
+enterprise and a home Internet connection.
       </t>
       <t>
 Nevertheless, where practical, an automated mechanism of perimeter discovery
@@ -147,7 +148,7 @@ a device could apply default security policies to traffic transiting the
 perimeter.
       </t>
       <t>
-Specifying a policy that should be applied to traffic crossing this
+Specifying the default policy that should be applied to traffic crossing this
 perimeter is out of scope of this document.  Implementors should remain
 mindful of recommended practices, e.g. <xref target="RFC4864">RFC 4864</xref>,
 et cetera.
@@ -203,31 +204,36 @@ nor any relationships between them as separate from their relationship to
 their common exterior or any common perimeter.  The architectures under
 discussion have a single interior, single exterior, and a single perimeter.
       </t>
-
       <t>
 The definition of perimeter is such that, for example, an IP packet arriving
 on a NAT device's interior interface that is "hairpinned" and retransmitted
 out the interior interface is not considered to have touched nor crossed
 the perimeter.
       </t>
-
       <t>
 The definition of perimeter as written technically permits traffic being
 forwarded over an interface to be classified as transiting a perimeter or
 not based on the classification of the next-hop.  The implications of this
-are discussed in TBD.
+are discussed in a later section.
       </t>
     </section>
 
     <section title="Fundamental recommendations">
+      <t>
+The application of security policies at the perimeter and possible relaxation
+of security policies within the interior are apt to have administrative
+consequences.  Some fundamental recommendations for nodes operating in this
+environment follow.
+      </t>
+
       <section title="Network node default security practices">
         <t>
 By default all network nodes SHOULD follow best current security practices.
 Any node may at times find itself in a hostile environment.  This is obviously
 true of mobile nodes when, for instance, connecting to a variety of public
-"Wi-Fi" networks.  In such environments mobile nodes cannot be sure that
-network device is acting in its own best security interests with respect to
-others on the local network.
+"Wi-Fi" networks.  In such environments mobile nodes cannot be sure that there
+is any network device acting in the mobile node's own best security interests
+with respect to others on the local network.
         </t>
         <t>
 It is equally true of more traditionally "fixed" nodes: any compromised
@@ -254,30 +260,21 @@ are made or changed.
 This is a non-trivial task as it is tantamount to automated discovery of
 administrative boundaries.
       </t>
-
       <t>
 Many architectures fundamentally make it difficult or impossible to detect
 administrative boundaries and rely on various mechanisms of user or
 administrator invention to create or modify such boundaries.  Other hints
-about administrative boundaries are insecure, unreliable, or impractical.
-[router peering and reverse IP DNS delegation examples]
+about administrative boundaries may be insecure, unreliable, operationally
+impractical, or may place arbitrary requirements upon the architectural where
+previously no such requirement existed.
       </t>
-
       <t>
-Nevertheless there are some guidelines that may be useful, though it is
-stressed that nothing is likely to be more secure than boundary detection
-by way of authenticated communication protocols (e.g. an authenticated
-interior routing protocol).
-      </t>
-
-      <t>
-This document discusses interfaces, traffic traversing them, whether doing
-so should be considered as crossing a perimeter, and which interfaces are
-"interior" versus "exterior".  There may be multiple interior interfaces as
-well as multiple exterior interfaces.  Notions of perimeter between pairs of
-exterior interfaces are out of scope, as are notions of perimeter between
-multiple interior interfaces (e.g., a home router with wired and "guest"
-wireless networks).
+Nevertheless there are some signals that may be useful.  Which signals are
+available and useful vary with the access architecture, and in some cases
+there may be virtually no reliable information to securely determine a
+perimeter.  An physically or cryptographically authenticated routing protocol
+may be the highest fidelity signal for determining the interior, and thereby
+the exterior and perimeter.
       </t>
 
       <section title="Links requiring subscriber information">
@@ -287,7 +284,7 @@ subscriber credentials in order for that link to successfully forward and
 receive general traffic.  Examples include authenticated PPPoE sessions,
 3G/LTE PDP contexts (requiring a SIM card associated with a customer account),
 and authenticated VPN links.  By default, all traffic traversing such a link
-SHOULD be considered to be traversing a boundary.
+SHOULD be considered to be traversing a perimeter.
         </t>
       </section>
 
@@ -333,6 +330,7 @@ Note that it would be insecure to consider a link on which a default router
 had disabled on-link determination via flags in the IPv6 RA as changing from
 security perimeter to interior as such a router may not actually be part of
 the interior's administrative domain.
+[router peering and reverse IP DNS delegation examples]
         </t>
       </section>
 
@@ -347,6 +345,13 @@ router SHOULD by default consider traffic forwarded between interfaces of
 differing regions as traversing a boundary.
         </t>
       </section>
+    </section>
+
+    <section title="IP over Ethernet">
+      <t>
+The ubuiquity of IPoE undoubtedly greatly simplifies network architectures
+and node requirements for connecting to such networks.
+      </t>
 
       <section title="DHCPv6 PD, if and only if...">
         <t>
@@ -425,43 +430,6 @@ Same in IPvv4 and IPv6.  Anything else will violate principle of least
 surprise, and may lead to a deployment in an insecure configuration.
         </t>
       </section>
-    </section>
-
-    <section title="Ignore these old scribblings">
-      <t>
-Assumptions include:
-      </t>
-      <t>
-A mechanism exists to manually override these defaults.
-RA-guard is sensibly, universally in effect.
-Something other than DHCPv6-PD will be used within the home (eventually)
-to distribute prefixes.
-By default, unless manually configured otherwise, traffic received or to be
-sent:
-via interfaces which are point-to-point (e.g., PPP(oE) interfaces,
-L2TP/VPNs/tunnels in general, et cetera), or
-via next-hops which issued an RA in which on-link computation was disabled
-(TODO: exception text for link types where !on-link is normal, e.g.
-LLN if the forwarding device in question is, say, a 6LBR), or
-via interfaces from which a prefix has been delegated via DHCPv6-PD, or
-via interfaces which have NO RFC3484(bis) global scope addresses of the same
-family as the passing traffic, or
-via next-hops which are NOT participating in an authenticated routing domain,
-when an authenticated routing domain is otherwise in use,
-MUST be considered as crossing a perimeter.
-
-TODO: see if we can rewrite this as an ordered set of tests or rules.
-[RTDDOM] By default, unless manually configured otherwise, traffic received
-from or to be sent via next-hops which are NOT participating in an
-authenticated routing domain when an authenticated routing domain is
-otherwise in use SHOULD be considered as crossing a perimeter.
-[PPPTUN] By default, unless manually configured otherwise, traffic received
-or to be sent via interfaces which are point-to-point in nature or
-are tunnel/encapsulated interfaces SHOULD be considered as crossing a perimeter.
-Examles of interfaces that by default would form a perimeter include
-PPP, PPPoE, PPPoA, L2TP tunnel interfaces, and typical VPN interfaces.
-This also includes Teredo, 6to4, 6rd, and 4rd interfaces.
-      </t>
     </section>
 
     <section anchor="simple_list" title="Simple List">
