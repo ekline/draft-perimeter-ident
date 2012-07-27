@@ -367,7 +367,7 @@ accordingly.
         </t>
       </section>
 
-      <section title="Links that are fundamentally point-to-point">
+      <section title="Links that are fundamentally point-to-point in nature">
         <t>
 Most home networking technology supports more than two nodes on the same
 logical link communicating directly.  By default, traffic traversing from
@@ -404,24 +404,34 @@ with a routable prefix block. If (and only if) a means of distributing prefixes
 among interior routers is devised that does NOT use DHCPv6 Prefix Delegation,
 then a link on which DHCPv6 PD succeeded SHOULD be considered an administrative
 boundary and traffic traversing this interface SHOULD be considered to be
-traversing a security perimeter.
+traversing a perimeter.
         </t>
 
         <t>
-If DHCPv6-PD is to be used within the interior then this signal is likely
-not at all useful.
+If DHCPv6-PD is to be used within the interior then this signal is not useful.
+        </t>
+      </section>
+
+      <section title="Other tricks?">
+        <t>
+If DHCPv4'ing an RFC 1918,6598,... address?  What other prefixes and updates
+will be required as we run out of IPv4?
         </t>
       </section>
     </section>
 
     <section title="Additional considerations">
+      <t>
+Everything herein needs more thought and work.
+      </t>
+
       <section title="Physical vs virtual interfaces">
         <t>
 In certain configurations it may be desirable that the perimeter defined on
 a virtual interface also be extended to include the physical interface(s) over
 which such traffic is forwarded/received.  For example, consider a router
 configured with a PPPoE virtual interface on a physical 802.3 interface.  In
-such a configuration, the security policy applied to traffic transitting the
+such a configuration, the security policy applied to traffic transiting the
 PPPoE interface should most likely also be applied to non-PPPoE traffic
 transitting the physical interface.  If not, the "interior" region would
 otherwise be logically extended to include the upstream access link.  As there
@@ -460,14 +470,19 @@ versus physical interface.
 
       <section title="Mixed zone next-hops on the same interface">
         <t>
-By default, if one then all.
+By default, if one then all. TBD: explain.
         </t>
       </section>
 
-      <section title="Perimeter and address families">
+      <section title="Perimeter and protocol version">
         <t>
-Same in IPv4 and IPv6.  Anything else will violate principle of least
-surprise, and may lead to a deployment in an insecure configuration.
+In cases where one IP version's perimeter might be determined to differ
+in some way from another IP version's identified perimeter, the potential
+for confusion and misconfiguration, and therefore security risk, increases.
+In the interests of simplicity, and in keeping with the principle of least
+surprise, traffic transiting links or forwarding to (received from) next-hops
+which would transit a perimeter in one protocol version SHOULD be considered
+as transiting a perimeter for traffic of all protocol versions.
         </t>
       </section>
     </section>
@@ -616,49 +631,6 @@ List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging', 'format'.
             <t>#10</t>
           </list> The end of the list.</t>
       </section>
-    </section>
--->
-
-<!--
-    <section anchor="codeExample"
-             title="Example of Code or MIB Module To Be Extracted">
-      <figure>
-        <preamble>The &lt;artwork&gt; element has a number of extra attributes
-        that can be used to substitute a more aesthetically pleasing rendition
-        into HTML output while continuing to use the ASCII art version in the
-        text and nroff outputs (see the xml2rfc README for details). It also
-        has a "type" attribute. This is currently ignored except in the case
-        'type="abnf"'. In this case the "artwork" is expected to contain a
-        piece of valid Augmented Backus-Naur Format (ABNF) grammar. This will
-        be syntax checked by xml2rfc and any errors will cause a fatal error
-        if the "strict" processing instruction is set to "yes". The ABNF will
-        also be colorized in HTML output to highlight the syntactic
-        components. Checking of additional "types" may be provided in future
-        versions of xml2rfc.</preamble>
-
-        <artwork><![CDATA[
-
-/**** an example C program */
-
-#include <stdio.h>
-
-void
-main(int argc, char *argv[])
-{
-    int i;
-
-    printf("program arguments are:\n");
-    for (i = 0; i < argc; i++) {
-        printf("%d: \"%s\"\n", i, argv[i]);
-    }
-
-    exit(0);
-} /* main */
-
-/* end of file */
-
-            ]]></artwork>
-      </figure>
     </section>
 -->
 

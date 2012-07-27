@@ -70,22 +70,22 @@ Table of Contents
      4.2.  Routing adjacency  . . . . . . . . . . . . . . . . . . . .  6
      4.3.  Links requiring subscriber information . . . . . . . . . .  6
      4.4.  Links requiring existing network-layer connectivity  . . .  7
-     4.5.  Links that are fundamentally point-to-point  . . . . . . .  7
+     4.5.  Links that are fundamentally point-to-point in nature  . .  7
    5.  IP over Ethernet . . . . . . . . . . . . . . . . . . . . . . .  7
      5.1.  DHCPv6 PD, if and only if... . . . . . . . . . . . . . . .  8
+     5.2.  Other tricks?  . . . . . . . . . . . . . . . . . . . . . .  8
    6.  Additional considerations  . . . . . . . . . . . . . . . . . .  8
      6.1.  Physical vs virtual interfaces . . . . . . . . . . . . . .  8
      6.2.  Mixed zone next-hops on the same interface . . . . . . . .  9
-     6.3.  Perimeter and address families . . . . . . . . . . . . . .  9
+     6.3.  Perimeter and protocol version . . . . . . . . . . . . . .  9
    7.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . .  9
    8.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . .  9
-   9.  Security Considerations  . . . . . . . . . . . . . . . . . . .  9
-   10. References . . . . . . . . . . . . . . . . . . . . . . . . . .  9
-     10.1. Normative References . . . . . . . . . . . . . . . . . . .  9
+   9.  Security Considerations  . . . . . . . . . . . . . . . . . . . 10
+   10. References . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+     10.1. Normative References . . . . . . . . . . . . . . . . . . . 10
      10.2. Informative References . . . . . . . . . . . . . . . . . . 10
    Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 10
    Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 10
-
 
 
 
@@ -360,7 +360,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    of the interior, and traffic traversing them also classified as
    interior traffic, another means MAY use to re-classify accordingly.
 
-4.5.  Links that are fundamentally point-to-point
+4.5.  Links that are fundamentally point-to-point in nature
 
    Most home networking technology supports more than two nodes on the
    same logical link communicating directly.  By default, traffic
@@ -404,13 +404,20 @@ Internet-Draft      Default Perimeter Identification           July 2012
    use DHCPv6 Prefix Delegation, then a link on which DHCPv6 PD
    succeeded SHOULD be considered an administrative boundary and traffic
    traversing this interface SHOULD be considered to be traversing a
-   security perimeter.
+   perimeter.
 
    If DHCPv6-PD is to be used within the interior then this signal is
-   likely not at all useful.
+   not useful.
+
+5.2.  Other tricks?
+
+   If DHCPv4'ing an RFC 1918,6598,... address?  What other prefixes and
+   updates will be required as we run out of IPv4?
 
 
 6.  Additional considerations
+
+   Everything herein needs more thought and work.
 
 6.1.  Physical vs virtual interfaces
 
@@ -419,13 +426,12 @@ Internet-Draft      Default Perimeter Identification           July 2012
    physical interface(s) over which such traffic is forwarded/received.
    For example, consider a router configured with a PPPoE virtual
    interface on a physical 802.3 interface.  In such a configuration,
-   the security policy applied to traffic transitting the PPPoE
-   interface should most likely also be applied to non-PPPoE traffic
-   transitting the physical interface.  If not, the "interior" region
-   would otherwise be logically extended to include the upstream access
-   link.  As there is no guaranteed of administrative boundary XXX, a
-   default configuration SHOULD consider the physical interface a
-   perimeter.
+   the security policy applied to traffic transiting the PPPoE interface
+   should most likely also be applied to non-PPPoE traffic transitting
+   the physical interface.  If not, the "interior" region would
+   otherwise be logically extended to include the upstream access link.
+   As there is no guaranteed of administrative boundary XXX, a default
+   configuration SHOULD consider the physical interface a perimeter.
 
    By way of contrast, consider an entirely interior router which also
    has a VPN interface, through which traffic may be passed to, say, a
@@ -435,12 +441,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    necessarily be classified as such.  Instead, what may be desired is
    that traffic to/from interfaces that are interior to this VPN-enabled
    router may pass through either the VPN interface or any "upstream"
-   interfaces, but traffic originating from "upstream" interfaces may be
-   default DENIED transit through the VPN interface.  While this
-   situation may be far from the norm for networks, it nevertheless
-   affords the maintenance of a simple mental model of a hierarchical
-   network.
-
 
 
 
@@ -448,6 +448,12 @@ Kline                   Expires January 28, 2013                [Page 8]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
+
+   interfaces, but traffic originating from "upstream" interfaces may be
+   default DENIED transit through the VPN interface.  While this
+   situation may be far from the norm for networks, it nevertheless
+   affords the maintenance of a simple mental model of a hierarchical
+   network.
 
    To address these uses, by default the physical interface(s) through
    which a virtual interface's traffic is forward should also be
@@ -461,12 +467,18 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 6.2.  Mixed zone next-hops on the same interface
 
-   By default, if one then all.
+   By default, if one then all.  TBD: explain.
 
-6.3.  Perimeter and address families
+6.3.  Perimeter and protocol version
 
-   Same in IPv4 and IPv6.  Anything else will violate principle of least
-   surprise, and may lead to a deployment in an insecure configuration.
+   In cases where one IP version's perimeter might be determined to
+   differ in some way from another IP version's identified perimeter,
+   the potential for confusion and misconfiguration, and therefore
+   security risk, increases.  In the interests of simplicity, and in
+   keeping with the principle of least surprise, traffic transiting
+   links or forwarding to (received from) next-hops which would transit
+   a perimeter in one protocol version SHOULD be considered as
+   transiting a perimeter for traffic of all protocol versions.
 
 
 7.  Acknowledgements
@@ -483,6 +495,16 @@ Internet-Draft      Default Perimeter Identification           July 2012
    This memo includes no request to IANA.
 
 
+
+
+
+
+
+Kline                   Expires January 28, 2013                [Page 9]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
 9.  Security Considerations
 
    All drafts are required to have a security considerations section.
@@ -495,15 +517,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
-
-
-
-
-
-Kline                   Expires January 28, 2013                [Page 9]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
 
 10.2.  Informative References
 
@@ -539,19 +552,6 @@ Author's Address
 
    Phone: +81 03 6384 9000
    Email: ek@google.com
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
