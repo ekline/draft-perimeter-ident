@@ -284,7 +284,7 @@ subscriber credentials in order for that link to successfully forward and
 receive general traffic.  Examples include authenticated PPPoE sessions,
 3G/LTE PDP contexts (requiring a SIM card associated with a customer account),
 and authenticated VPN links.  By default, all traffic traversing such a link
-MUST be considered to be traversing a perimeter.
+SHOULD be considered to be traversing a perimeter.
         </t>
       </section>
 
@@ -292,14 +292,14 @@ MUST be considered to be traversing a perimeter.
         <t>
 By default, all traffic traversing any interface that encapsulates
 (decapsulates) its payload in a layer higher than or equal to the network (IP)
-layer in order to forward (receive) traffic MUST be considered to be
+layer in order to forward (receive) traffic SHOULD be considered to be
 traversing a perimeter.  Examples of such interfaces include: Teredo, 6to4,
 6rd, 4rd, PPTP and L2TP tunnels, et cetera.
         </t>
         <t>
 In cases where the exact layer of encapsulation is not necessarily clearly
 defined or agreed upon, e.g. MPLS interfaces, traffic traversing such
-interfaces MUST also by default be considered to be traversing a perimeter.
+interfaces SHOULD also by default be considered to be traversing a perimeter.
         </t>
         <t>
 In the absence of default perimeter classification, such links would provide
@@ -313,15 +313,35 @@ accordingly.
 
       <section title="Routing adjacency">
         <t>
-Within architectures where a physically or cryptographically secure routing
-protocol is in use
+Some networks may employ a physically or cryptographically secure routing
+protocol.  Within such networks, traffic received from and scheduled to be
+forwarded to next-hops with whom an adjacency has been formed SHOULD by default
+be classified as interior and not considered to be transiting a perimeter.
+        </t>
+        <t>
+Similarly, traffic forwarded to or received from next-hops with whom no
+adjacency has been formed SHOULD by default be classified as exterior.  A
+next-hop with whom no adjacency has been formed but which nevertheless
+constitutes the next-hop for a learned or configured route SHOULD by default
+be considered exterior.
+        </t>
+        <t>
+If (and only if?) an interface has only interior next-hops then traffic
+originating from nodes on links on that interface SHOULD by default be
+considered to be interior...
 
-
-authenticated, secure
-Undoubtedly the most reliable method for perimeter detection may be all
-interfaces that form an authenticated adjacency to...
-
-Discuss: [two routers each sharing a hub with two upstreams on it]
+Discuss: [two routers each sharing a hub with two upstreams on it].
+HELP: probably have to fallback on product-defined interface purposes in the
+absence of interior next-hops.
+        </t>
+        <t>
+HELP: must more thought is required here.  What about bring-up order?  What
+about an interior node attempting and failing to start an authenticated
+adjacency: it's a problem if the interface flips into exterior classification.
+        </t>
+        <t>
+HELP: find language that doesn't, for example, define interior to be the
+entire Internet when RPKI is in use.
         </t>
       </section>
 
@@ -334,19 +354,6 @@ either by design (e.g. a point-to-point link) or administrative choice
 (e.g. an 802.11 SSID on which the infrastructural access point forbids direct
 neighbor communications) SHOULD be considered as crossing an administrative
 boundary and therefore SHOULD be considered as crossing a security perimeter.
-        </t>
-
-        <t>
-Discuss: same for tunneled protocols where "point-to-point" isn't necessarily
-a requirement, e.g. 6to4.
-        </t>
-
-        <t>
-Note that it would be insecure to consider a link on which a default router
-had disabled on-link determination via flags in the IPv6 RA as changing from
-security perimeter to interior as such a router may not actually be part of
-the interior's administrative domain.
-[router peering and reverse IP DNS delegation examples]
         </t>
       </section>
 
@@ -442,12 +449,13 @@ By default, if one then all.
 
       <section title="Perimeter and address families">
         <t>
-Same in IPvv4 and IPv6.  Anything else will violate principle of least
+Same in IPv4 and IPv6.  Anything else will violate principle of least
 surprise, and may lead to a deployment in an insecure configuration.
         </t>
       </section>
     </section>
 
+<!--
     <section anchor="simple_list" title="Simple List">
       <t>
 List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging', 'format'.
@@ -484,10 +492,11 @@ List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging', 'format'.
       significant in figures even if you don't use CDATA.</t>
     </section>
 
-    <!-- This PI places the pagebreak correctly (before the section title)
-         in the text output. -->
 
-    <?rfc needLines="8" ?>
+    <?rfc needLines="8"
+      This PI places the pagebreak correctly (before the section title)
+      in the text output.
+    ?>
 
     <section title="Subsections and Tables">
       <section title="A Subsection">
@@ -536,10 +545,9 @@ List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging', 'format'.
           item to start on a new line.</t>
         </list></t>
 
-      <!-- It would be nice to see the next piece (12 lines) all on one page.
-        -->
-
-      <?rfc needLines="12" ?>
+      <?rfc needLines="12"
+      It would be nice to see the next piece (12 lines) all on one page.
+      ?>
 
       <t>Simulating more than one paragraph in a list item using
       &lt;vspace&gt;: <list style="letters">
@@ -592,6 +600,7 @@ List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging', 'format'.
           </list> The end of the list.</t>
       </section>
     </section>
+-->
 
 <!--
     <section anchor="codeExample"
@@ -680,8 +689,9 @@ This memo includes no request to IANA.
       <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
       &RFC2119;
 
+        <!--
       <reference anchor="min_ref">
-        <!-- the following is the minimum to make xml2rfc happy -->
+        the following is the minimum to make xml2rfc happy
 
         <front>
           <title>Minimal Reference</title>
@@ -693,6 +703,7 @@ This memo includes no request to IANA.
           <date year="2006" />
         </front>
       </reference>
+      -->
     </references>
 
     <references title="Informative References">

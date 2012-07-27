@@ -69,30 +69,30 @@ Table of Contents
      4.1.  Links requiring subscriber information . . . . . . . . . .  5
      4.2.  Links requiring existing network-layer connectivity  . . .  6
      4.3.  Routing adjacency  . . . . . . . . . . . . . . . . . . . .  6
-     4.4.  on-link neighbor communications  . . . . . . . . . . . . .  6
+     4.4.  on-link neighbor communications  . . . . . . . . . . . . .  7
      4.5.  Product-defined interface purposes . . . . . . . . . . . .  7
    5.  IP over Ethernet . . . . . . . . . . . . . . . . . . . . . . .  7
      5.1.  DHCPv6 PD, if and only if... . . . . . . . . . . . . . . .  7
    6.  Additional considerations  . . . . . . . . . . . . . . . . . .  7
-     6.1.  Physical vs virtual interfaces . . . . . . . . . . . . . .  7
+     6.1.  Physical vs virtual interfaces . . . . . . . . . . . . . .  8
      6.2.  Mixed zone next-hops on the same interface . . . . . . . .  8
      6.3.  Perimeter and address families . . . . . . . . . . . . . .  8
-   7.  Simple List  . . . . . . . . . . . . . . . . . . . . . . . . .  8
-   8.  Figures  . . . . . . . . . . . . . . . . . . . . . . . . . . .  9
-   9.  Subsections and Tables . . . . . . . . . . . . . . . . . . . .  9
-     9.1.  A Subsection . . . . . . . . . . . . . . . . . . . . . . .  9
-     9.2.  Tables . . . . . . . . . . . . . . . . . . . . . . . . . .  9
-   10. More about Lists . . . . . . . . . . . . . . . . . . . . . . . 10
-     10.1. Numbering Lists across Lists and Sections  . . . . . . . . 10
-     10.2. Where the List Numbering Continues . . . . . . . . . . . . 11
-   11. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 11
-   12. IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 11
-   13. Security Considerations  . . . . . . . . . . . . . . . . . . . 11
-   14. References . . . . . . . . . . . . . . . . . . . . . . . . . . 11
-     14.1. Normative References . . . . . . . . . . . . . . . . . . . 11
-     14.2. Informative References . . . . . . . . . . . . . . . . . . 12
-   Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 12
-   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 12
+   7.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . .  9
+   8.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . .  9
+   9.  Security Considerations  . . . . . . . . . . . . . . . . . . .  9
+   10. References . . . . . . . . . . . . . . . . . . . . . . . . . .  9
+     10.1. Normative References . . . . . . . . . . . . . . . . . . .  9
+     10.2. Informative References . . . . . . . . . . . . . . . . . .  9
+   Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 10
+   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+
+
+
+
+
+
+
 
 
 
@@ -270,7 +270,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    successfully forward and receive general traffic.  Examples include
    authenticated PPPoE sessions, 3G/LTE PDP contexts (requiring a SIM
    card associated with a customer account), and authenticated VPN
-   links.  By default, all traffic traversing such a link MUST be
+   links.  By default, all traffic traversing such a link SHOULD be
    considered to be traversing a perimeter.
 
 
@@ -285,13 +285,13 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
    By default, all traffic traversing any interface that encapsulates
    (decapsulates) its payload in a layer higher than or equal to the
-   network (IP) layer in order to forward (receive) traffic MUST be
+   network (IP) layer in order to forward (receive) traffic SHOULD be
    considered to be traversing a perimeter.  Examples of such interfaces
    include: Teredo, 6to4, 6rd, 4rd, PPTP and L2TP tunnels, et cetera.
 
    In cases where the exact layer of encapsulation is not necessarily
    clearly defined or agreed upon, e.g.  MPLS interfaces, traffic
-   traversing such interfaces MUST also by default be considered to be
+   traversing such interfaces SHOULD also by default be considered to be
    traversing a perimeter.
 
    In the absence of default perimeter classification, such links would
@@ -303,11 +303,39 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 4.3.  Routing adjacency
 
-   Within architectures where a physically or cryptographically secure
-   routing protocol is in use authenticated, secure Undoubtedly the most
-   reliable method for perimeter detection may be all interfaces that
-   form an authenticated adjacency to...  Discuss: [two routers each
-   sharing a hub with two upstreams on it]
+   Some networks may employ a physically or cryptographically secure
+   routing protocol.  Within such networks, traffic received from and
+   scheduled to be forwarded to next-hops with whom an adjacency has
+   been formed SHOULD by default be classified as interior and not
+   considered to be transiting a perimeter.
+
+   Similarly, traffic forwarded to or received from next-hops with whom
+   no adjacency has been formed SHOULD by default be classified as
+   exterior.  A next-hop with whom no adjacency has been formed but
+   which nevertheless constitutes the next-hop for a learned or
+   configured route SHOULD by default be considered exterior.
+
+   If (and only if?) an interface has only interior next-hops then
+   traffic originating from nodes on links on that interface SHOULD by
+   default be considered to be interior...  Discuss: [two routers each
+   sharing a hub with two upstreams on it].  HELP: probably have to
+   fallback on product-defined interface purposes in the absence of
+   interior next-hops.
+
+   HELP: must more thought is required here.  What about bring-up order?
+   What about an interior node attempting and failing to start an
+   authenticated adjacency: it's a problem if the interface flips into
+   exterior classification.
+
+   HELP: find language that doesn't, for example, define interior to be
+   the entire Internet when RPKI is in use.
+
+
+
+Kline                   Expires January 28, 2013                [Page 6]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
 
 4.4.  on-link neighbor communications
 
@@ -319,23 +347,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    infrastructural access point forbids direct neighbor communications)
    SHOULD be considered as crossing an administrative boundary and
    therefore SHOULD be considered as crossing a security perimeter.
-
-   Discuss: same for tunneled protocols where "point-to-point" isn't
-   necessarily a requirement, e.g. 6to4.
-
-   Note that it would be insecure to consider a link on which a default
-   router had disabled on-link determination via flags in the IPv6 RA as
-   changing from security perimeter to interior as such a router may not
-   actually be part of the interior's administrative domain. [router
-   peering and reverse IP DNS delegation examples]
-
-
-
-
-Kline                   Expires January 28, 2013                [Page 6]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
 
 4.5.  Product-defined interface purposes
 
@@ -371,6 +382,17 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 6.  Additional considerations
 
+
+
+
+
+
+
+Kline                   Expires January 28, 2013                [Page 7]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
 6.1.  Physical vs virtual interfaces
 
    In certain configurations it may be desirable that the perimeter
@@ -385,13 +407,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    link.  As there is no guaranteed of administrative boundary XXX, a
    default configuration SHOULD consider the physical interface a
    perimeter.
-
-
-
-Kline                   Expires January 28, 2013                [Page 7]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
 
    By way of contrast, consider an entirely interior router which also
    has a VPN interface, through which traffic may be passed to, say, a
@@ -423,23 +438,8 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 6.3.  Perimeter and address families
 
-   Same in IPvv4 and IPv6.  Anything else will violate principle of
-   least surprise, and may lead to a deployment in an insecure
-   configuration.
-
-
-7.  Simple List
-
-   List styles: 'empty', 'symbols', 'letters', 'numbers', 'hanging',
-   'format'.
-
-   o  First bullet
-
-   o  Second bullet
-
-   You can write text here as well.
-
-
+   Same in IPv4 and IPv6.  Anything else will violate principle of least
+   surprise, and may lead to a deployment in an insecure configuration.
 
 
 
@@ -449,140 +449,7 @@ Kline                   Expires January 28, 2013                [Page 8]
 Internet-Draft      Default Perimeter Identification           July 2012
 
 
-8.  Figures
-
-   Figures should not exceed 69 characters wide to allow for the indent
-   of sections.
-
-                 Preamble text - can be omitted or empty.
-
-   +-----------------------+
-   | Use XML, be Happy :-) |
-   |_______________________|
-
-        Cross-references allowed in pre- and postamble. [min_ref].
-
-                                 Figure 1
-
-   The CDATA means you don't need to escape meta-characters (especially
-   < (&lt;) and & (&amp;)) but is not essential.  Figures may also have
-   a title attribute but it won't be displayed unless there is also an
-   anchor.  White space, both horizontal and vertical, is significant in
-   figures even if you don't use CDATA.
-
-
-9.  Subsections and Tables
-
-9.1.  A Subsection
-
-   By default 3 levels of nesting show in table of contents but that can
-   be adjusted with the value of the "tocdepth" processing instruction.
-
-9.2.  Tables
-
-   .. are very similar to figures:
-
-     Tables use ttcol to define column headers and widths.  Every cell
-                  then has a "c" element for its content.
-
-                          +----------+----------+
-                          | ttcol #1 | ttcol #2 |
-                          +----------+----------+
-                          |   c #1   |   c #2   |
-                          |   c #3   |   c #4   |
-                          |   c #5   |   c #6   |
-                          +----------+----------+
-
-                      which is a very simple example.
-
-                       Table 1: A Very Simple Table
-
-
-
-
-Kline                   Expires January 28, 2013                [Page 9]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
-10.  More about Lists
-
-   Lists with 'hanging labels': the list item is indented the amount of
-   the hangIndent:
-
-   short   With a label shorter than the hangIndent.
-
-   fantastically long label  With a label longer than the hangIndent.
-
-   vspace_trick
-           Forces the new item to start on a new line.
-
-   Simulating more than one paragraph in a list item using <vspace>:
-
-   a.  First, a short item.
-
-   b.  Second, a longer list item.
-
-       And something that looks like a separate pararaph..
-
-   Simple indented paragraph using the "empty" style:
-
-             The quick, brown fox jumped over the lazy dog and lived to
-             fool many another hunter in the great wood in the west.
-
-10.1.  Numbering Lists across Lists and Sections
-
-   Numbering items continuously although they are in separate <list>
-   elements, maybe in separate sections using the "format" style and a
-   "counter" variable.
-
-   First list:
-
-   R1  #1
-
-   R2  #2
-
-   R3  #3
-
-   Specify the indent explicitly so that all the items line up nicely.
-
-   Second list:
-
-   R4  #4
-
-
-
-
-
-
-
-Kline                   Expires January 28, 2013               [Page 10]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
-   R5  #5
-
-   R6  #6
-
-10.2.  Where the List Numbering Continues
-
-   List continues here.
-
-   Third list:
-
-   R7   #7
-
-   R8   #8
-
-   R9   #9
-
-   R10  #10
-
-   The end of the list.
-
-
-11.  Acknowledgements
+7.  Acknowledgements
 
    The author gratefully acknowledges the constructive input and
    criticism of Lorenzo Colitti, Mark Townsley, and Ole Troan.
@@ -591,35 +458,25 @@ Internet-Draft      Default Perimeter Identification           July 2012
    Japan Rail (JR) Shinkansen ("bullet train").
 
 
-12.  IANA Considerations
+8.  IANA Considerations
 
    This memo includes no request to IANA.
 
 
-13.  Security Considerations
+9.  Security Considerations
 
    All drafts are required to have a security considerations section.
    See RFC 3552 [RFC3552] for a guide.
 
 
-14.  References
+10.  References
 
-14.1.  Normative References
+10.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
-
-
-
-Kline                   Expires January 28, 2013               [Page 11]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
-   [min_ref]  authSurName, authInitials., "Minimal Reference", 2006.
-
-14.2.  Informative References
+10.2.  Informative References
 
    [RFC1918]  Rekhter, Y., Moskowitz, R., Karrenberg, D., Groot, G., and
               E. Lear, "Address Allocation for Private Internets",
@@ -636,6 +493,16 @@ Internet-Draft      Default Perimeter Identification           July 2012
    [TORPIG]   Stone-Gross, B., "Your Botnet is My Botnet: Analysis of a
               Botnet Takeover", 2009, <http://www.cs.ucsb.edu/~seclab/
               projects/torpig/torpig.pdf>.
+
+
+
+
+
+
+
+Kline                   Expires January 28, 2013                [Page 9]
+
+Internet-Draft      Default Perimeter Identification           July 2012
 
 
 Appendix A.  Additional Stuff
@@ -668,5 +535,26 @@ Author's Address
 
 
 
-Kline                   Expires January 28, 2013               [Page 12]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kline                   Expires January 28, 2013               [Page 10]
 
