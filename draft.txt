@@ -67,10 +67,10 @@ Table of Contents
      3.2.  Logging  . . . . . . . . . . . . . . . . . . . . . . . . .  5
    4.  Useful perimeter signals . . . . . . . . . . . . . . . . . . .  5
      4.1.  Links requiring subscriber information . . . . . . . . . .  5
-     4.2.  Links requiring existing IP-layer connectivity . . . . . .  6
+     4.2.  Links requiring existing network-layer connectivity  . . .  6
      4.3.  Routing adjacency  . . . . . . . . . . . . . . . . . . . .  6
      4.4.  on-link neighbor communications  . . . . . . . . . . . . .  6
-     4.5.  Product-defined interface purposes . . . . . . . . . . . .  6
+     4.5.  Product-defined interface purposes . . . . . . . . . . . .  7
    5.  IP over Ethernet . . . . . . . . . . . . . . . . . . . . . . .  7
      5.1.  DHCPv6 PD, if and only if... . . . . . . . . . . . . . . .  7
    6.  Additional considerations  . . . . . . . . . . . . . . . . . .  7
@@ -78,11 +78,11 @@ Table of Contents
      6.2.  Mixed zone next-hops on the same interface . . . . . . . .  8
      6.3.  Perimeter and address families . . . . . . . . . . . . . .  8
    7.  Simple List  . . . . . . . . . . . . . . . . . . . . . . . . .  8
-   8.  Figures  . . . . . . . . . . . . . . . . . . . . . . . . . . .  8
+   8.  Figures  . . . . . . . . . . . . . . . . . . . . . . . . . . .  9
    9.  Subsections and Tables . . . . . . . . . . . . . . . . . . . .  9
      9.1.  A Subsection . . . . . . . . . . . . . . . . . . . . . . .  9
      9.2.  Tables . . . . . . . . . . . . . . . . . . . . . . . . . .  9
-   10. More about Lists . . . . . . . . . . . . . . . . . . . . . . .  9
+   10. More about Lists . . . . . . . . . . . . . . . . . . . . . . . 10
      10.1. Numbering Lists across Lists and Sections  . . . . . . . . 10
      10.2. Where the List Numbering Continues . . . . . . . . . . . . 11
    11. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 11
@@ -270,7 +270,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    successfully forward and receive general traffic.  Examples include
    authenticated PPPoE sessions, 3G/LTE PDP contexts (requiring a SIM
    card associated with a customer account), and authenticated VPN
-   links.  By default, all traffic traversing such a link SHOULD be
+   links.  By default, all traffic traversing such a link MUST be
    considered to be traversing a perimeter.
 
 
@@ -281,19 +281,33 @@ Kline                   Expires January 28, 2013                [Page 5]
 Internet-Draft      Default Perimeter Identification           July 2012
 
 
-4.2.  Links requiring existing IP-layer connectivity
+4.2.  Links requiring existing network-layer connectivity
 
-   E.g.  Teredo, 6to4, 6rd, 4rd, PPTP/L2TP tunnels, ...
+   By default, all traffic traversing any interface that encapsulates
+   (decapsulates) its payload in a layer higher than or equal to the
+   network (IP) layer in order to forward (receive) traffic MUST be
+   considered to be traversing a perimeter.  Examples of such interfaces
+   include: Teredo, 6to4, 6rd, 4rd, PPTP and L2TP tunnels, et cetera.
+
+   In cases where the exact layer of encapsulation is not necessarily
+   clearly defined or agreed upon, e.g.  MPLS interfaces, traffic
+   traversing such interfaces MUST also by default be considered to be
+   traversing a perimeter.
+
+   In the absence of default perimeter classification, such links would
+   provide a mechanism to breach an otherwise existing perimeter and
+   generally complicate the definition and discovery of the interior.
+   In cases where such interfaces are desired to be classified as part
+   of the interior, and traffic traversing them also classified as
+   interior traffic, another means MAY use to re-classify accordingly.
 
 4.3.  Routing adjacency
 
-   authenticated, secure Undoubtedly the most reliable method for
-   perimeter detection may be all interfaces that form an authenticated
-   adjacency to...  Discuss: [two routers each sharing a hub with two
-   upstreams on it]
-
-   Routing protocol could further define security zones so that the
-   rules among interiors and among exteriors could be defined...
+   Within architectures where a physically or cryptographically secure
+   routing protocol is in use authenticated, secure Undoubtedly the most
+   reliable method for perimeter detection may be all interfaces that
+   form an authenticated adjacency to...  Discuss: [two routers each
+   sharing a hub with two upstreams on it]
 
 4.4.  on-link neighbor communications
 
@@ -315,6 +329,14 @@ Internet-Draft      Default Perimeter Identification           July 2012
    actually be part of the interior's administrative domain. [router
    peering and reverse IP DNS delegation examples]
 
+
+
+
+Kline                   Expires January 28, 2013                [Page 6]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
 4.5.  Product-defined interface purposes
 
    Many products come with interfaces labeled with their intended use.
@@ -325,16 +347,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    "exterior" are clearly implied a homenet router SHOULD by default
    consider traffic forwarded between interfaces of differing regions as
    traversing a boundary.
-
-
-
-
-
-
-
-Kline                   Expires January 28, 2013                [Page 6]
-
-Internet-Draft      Default Perimeter Identification           July 2012
 
 
 5.  IP over Ethernet
@@ -374,6 +386,13 @@ Internet-Draft      Default Perimeter Identification           July 2012
    default configuration SHOULD consider the physical interface a
    perimeter.
 
+
+
+Kline                   Expires January 28, 2013                [Page 7]
+
+Internet-Draft      Default Perimeter Identification           July 2012
+
+
    By way of contrast, consider an entirely interior router which also
    has a VPN interface, through which traffic may be passed to, say, a
    resident's company network.  While a VPN virtual interface SHOULD be
@@ -385,14 +404,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    interfaces, but traffic originating from "upstream" interfaces may be
    default DENIED transit through the VPN interface.  While this
    situation may be far from the norm for networks, it nevertheless
-
-
-
-Kline                   Expires January 28, 2013                [Page 7]
-
-Internet-Draft      Default Perimeter Identification           July 2012
-
-
    affords the maintenance of a simple mental model of a hierarchical
    network.
 
@@ -429,17 +440,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    You can write text here as well.
 
 
-8.  Figures
-
-   Figures should not exceed 69 characters wide to allow for the indent
-   of sections.
-
-
-
-
-
-
-
 
 
 
@@ -448,6 +448,11 @@ Kline                   Expires January 28, 2013                [Page 8]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
+
+8.  Figures
+
+   Figures should not exceed 69 characters wide to allow for the indent
+   of sections.
 
                  Preamble text - can be omitted or empty.
 
@@ -493,17 +498,17 @@ Internet-Draft      Default Perimeter Identification           July 2012
                        Table 1: A Very Simple Table
 
 
-10.  More about Lists
-
-   Lists with 'hanging labels': the list item is indented the amount of
-   the hangIndent:
-
 
 
 Kline                   Expires January 28, 2013                [Page 9]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
+
+10.  More about Lists
+
+   Lists with 'hanging labels': the list item is indented the amount of
+   the hangIndent:
 
    short   With a label shorter than the hangIndent.
 
@@ -545,11 +550,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
    R4  #4
 
-   R5  #5
-
-   R6  #6
-
-
 
 
 
@@ -560,6 +560,10 @@ Kline                   Expires January 28, 2013               [Page 10]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
+
+   R5  #5
+
+   R6  #6
 
 10.2.  Where the List Numbering Continues
 
@@ -605,10 +609,6 @@ Internet-Draft      Default Perimeter Identification           July 2012
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
-   [min_ref]  authSurName, authInitials., "Minimal Reference", 2006.
-
-
-
 
 
 
@@ -616,6 +616,8 @@ Kline                   Expires January 28, 2013               [Page 11]
 
 Internet-Draft      Default Perimeter Identification           July 2012
 
+
+   [min_ref]  authSurName, authInitials., "Minimal Reference", 2006.
 
 14.2.  Informative References
 
@@ -651,8 +653,6 @@ Author's Address
 
    Phone: +81 03 6384 9000
    Email: ek@google.com
-
-
 
 
 

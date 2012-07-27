@@ -284,28 +284,44 @@ subscriber credentials in order for that link to successfully forward and
 receive general traffic.  Examples include authenticated PPPoE sessions,
 3G/LTE PDP contexts (requiring a SIM card associated with a customer account),
 and authenticated VPN links.  By default, all traffic traversing such a link
-SHOULD be considered to be traversing a perimeter.
+MUST be considered to be traversing a perimeter.
         </t>
       </section>
 
-      <section title="Links requiring existing IP-layer connectivity">
+      <section title="Links requiring existing network-layer connectivity">
         <t>
-E.g. Teredo, 6to4, 6rd, 4rd, PPTP/L2TP tunnels, ...
+By default, all traffic traversing any interface that encapsulates
+(decapsulates) its payload in a layer higher than or equal to the network (IP)
+layer in order to forward (receive) traffic MUST be considered to be
+traversing a perimeter.  Examples of such interfaces include: Teredo, 6to4,
+6rd, 4rd, PPTP and L2TP tunnels, et cetera.
+        </t>
+        <t>
+In cases where the exact layer of encapsulation is not necessarily clearly
+defined or agreed upon, e.g. MPLS interfaces, traffic traversing such
+interfaces MUST also by default be considered to be traversing a perimeter.
+        </t>
+        <t>
+In the absence of default perimeter classification, such links would provide
+a mechanism to breach an otherwise existing perimeter and generally complicate
+the definition and discovery of the interior.  In cases where such interfaces
+are desired to be classified as part of the interior, and traffic traversing
+them also classified as interior traffic, another means MAY use to re-classify
+accordingly.
         </t>
       </section>
 
       <section title="Routing adjacency">
         <t>
+Within architectures where a physically or cryptographically secure routing
+protocol is in use
+
+
 authenticated, secure
 Undoubtedly the most reliable method for perimeter detection may be all
 interfaces that form an authenticated adjacency to...
 
 Discuss: [two routers each sharing a hub with two upstreams on it]
-        </t>
-
-        <t>
-Routing protocol could further define security zones so that the rules among
-interiors and among exteriors could be defined...
         </t>
       </section>
 
