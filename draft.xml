@@ -414,8 +414,12 @@ If DHCPv6-PD is to be used within the interior then this signal is not useful.
 
       <section title="Other tricks?">
         <t>
-If DHCPv4'ing an RFC 1918,6598,... address?  What other prefixes and updates
-will be required as we run out of IPv4?
+(TBD) If you're DHCPv6-setting-up-the-reverse-DNS then that interface SHOULD
+be considered part of the perimeter.
+        </t>
+        <t>
+(TBD) If DHCPv4'ing an RFC 1918,6598,... address?  What other prefixes and
+updates will be required as we run out of IPv4?
         </t>
       </section>
     </section>
