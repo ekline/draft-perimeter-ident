@@ -3,8 +3,8 @@
 
 Internet Engineering Task Force                                 E. Kline
 Internet-Draft                                               Google Inc.
-Intended status: Informational                             July 29, 2012
-Expires: January 30, 2013
+Intended status: Informational                            August 3, 2012
+Expires: February 4, 2013
 
 
                     Default Perimeter Identification
@@ -33,7 +33,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 30, 2013.
+   This Internet-Draft will expire on February 4, 2013.
 
 Copyright Notice
 
@@ -52,9 +52,9 @@ Copyright Notice
 
 
 
-Kline                   Expires January 30, 2013                [Page 1]
+Kline                   Expires February 4, 2013                [Page 1]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
 Table of Contents
@@ -108,9 +108,9 @@ Table of Contents
 
 
 
-Kline                   Expires January 30, 2013                [Page 2]
+Kline                   Expires February 4, 2013                [Page 2]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
 1.  Introduction
@@ -136,7 +136,7 @@ Internet-Draft      Default Perimeter Identification           July 2012
    Specifying the default policy that should be applied to traffic
    crossing this perimeter is out of scope of this document.
    Implementors should remain mindful of recommended practices, e.g.
-   RFC 4864 [RFC4864], et cetera.
+   RFC 4864 [RFC4864], RFC 4890 [RFC4890], et cetera.
 
 1.1.  Requirements Language
 
@@ -164,9 +164,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 
 
-Kline                   Expires January 30, 2013                [Page 3]
+Kline                   Expires February 4, 2013                [Page 3]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
    Exterior
@@ -220,9 +220,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 
 
-Kline                   Expires January 30, 2013                [Page 4]
+Kline                   Expires February 4, 2013                [Page 4]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
    such environments mobile nodes cannot be sure that there is any
@@ -276,9 +276,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 
 
-Kline                   Expires January 30, 2013                [Page 5]
+Kline                   Expires February 4, 2013                [Page 5]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
 4.1.  Product-defined interface purposes
@@ -332,9 +332,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 
 
-Kline                   Expires January 30, 2013                [Page 6]
+Kline                   Expires February 4, 2013                [Page 6]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
    traffic traversing such a link SHOULD be considered to be traversing
@@ -388,9 +388,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 
 
-Kline                   Expires January 30, 2013                [Page 7]
+Kline                   Expires February 4, 2013                [Page 7]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
    determine if it is fully in the interior of a network or part of the
@@ -411,8 +411,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 5.2.  Other tricks?
 
-   (TBD) If you're DHCPv6-setting-up-the-reverse-DNS then that interface
-   SHOULD be considered part of the perimeter.
+   (TBD) If you're DHCPv6-setting-up-the-reverse-DNS (i.e., not
+   necessarily hosting but coordinating the delegation thereof) then
+   that interface SHOULD be considered part of the perimeter.
 
    (TBD) If DHCPv4'ing an RFC 1918,6598,... address?  What other
    prefixes and updates will be required as we run out of IPv4?
@@ -440,15 +441,15 @@ Internet-Draft      Default Perimeter Identification           July 2012
    has a VPN interface, through which traffic may be passed to, say, a
    resident's company network.  While a VPN virtual interface SHOULD be
    considered a logical demarcation point, the physical interface
-   through which VPN-encapsulated traffic is transmitted need not
 
 
 
-Kline                   Expires January 30, 2013                [Page 8]
+Kline                   Expires February 4, 2013                [Page 8]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
+   through which VPN-encapsulated traffic is transmitted need not
    necessarily be classified as such.  Instead, what may be desired is
    that traffic to/from interfaces that are interior to this VPN-enabled
    router may pass through either the VPN interface or any "upstream"
@@ -499,10 +500,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
 
 
 
-
-Kline                   Expires January 30, 2013                [Page 9]
+Kline                   Expires February 4, 2013                [Page 9]
 
-Internet-Draft      Default Perimeter Identification           July 2012
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
 9.  Security Considerations
@@ -532,6 +532,9 @@ Internet-Draft      Default Perimeter Identification           July 2012
               E. Klein, "Local Network Protection for IPv6", RFC 4864,
               May 2007.
 
+   [RFC4890]  Davies, E. and J. Mohacsi, "Recommendations for Filtering
+              ICMPv6 Messages in Firewalls", RFC 4890, May 2007.
+
    [TORPIG]   Stone-Gross, B., "Your Botnet is My Botnet: Analysis of a
               Botnet Takeover", 2009, <http://www.cs.ucsb.edu/~seclab/
               projects/torpig/torpig.pdf>.
@@ -540,6 +543,22 @@ Internet-Draft      Default Perimeter Identification           July 2012
 Appendix A.  Additional Stuff
 
    This becomes an Appendix.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kline                   Expires February 4, 2013               [Page 10]
+
+Internet-Draft      Default Perimeter Identification         August 2012
 
 
 Author's Address
@@ -556,5 +575,42 @@ Author's Address
 
 
 
-Kline                   Expires January 30, 2013               [Page 10]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kline                   Expires February 4, 2013               [Page 11]
 
