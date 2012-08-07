@@ -3,8 +3,8 @@
 
 Internet Engineering Task Force                                 E. Kline
 Internet-Draft                                               Google Inc.
-Intended status: Informational                            August 3, 2012
-Expires: February 4, 2013
+Intended status: Informational                            August 7, 2012
+Expires: February 8, 2013
 
 
                     Default Perimeter Identification
@@ -33,7 +33,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 4, 2013.
+   This Internet-Draft will expire on February 8, 2013.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Kline                   Expires February 4, 2013                [Page 1]
+Kline                   Expires February 8, 2013                [Page 1]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -79,13 +79,13 @@ Table of Contents
      6.2.  Mixed zone next-hops on the same interface . . . . . . . .  9
      6.3.  Perimeter and protocol version . . . . . . . . . . . . . .  9
    7.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . .  9
-   8.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . .  9
+   8.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 10
    9.  Security Considerations  . . . . . . . . . . . . . . . . . . . 10
    10. References . . . . . . . . . . . . . . . . . . . . . . . . . . 10
      10.1. Normative References . . . . . . . . . . . . . . . . . . . 10
      10.2. Informative References . . . . . . . . . . . . . . . . . . 10
    Appendix A.  Additional Stuff  . . . . . . . . . . . . . . . . . . 10
-   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 10
+   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 11
 
 
 
@@ -108,7 +108,7 @@ Table of Contents
 
 
 
-Kline                   Expires February 4, 2013                [Page 2]
+Kline                   Expires February 8, 2013                [Page 2]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -164,7 +164,7 @@ Internet-Draft      Default Perimeter Identification         August 2012
 
 
 
-Kline                   Expires February 4, 2013                [Page 3]
+Kline                   Expires February 8, 2013                [Page 3]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -220,7 +220,7 @@ Internet-Draft      Default Perimeter Identification         August 2012
 
 
 
-Kline                   Expires February 4, 2013                [Page 4]
+Kline                   Expires February 8, 2013                [Page 4]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -276,7 +276,7 @@ Internet-Draft      Default Perimeter Identification         August 2012
 
 
 
-Kline                   Expires February 4, 2013                [Page 5]
+Kline                   Expires February 8, 2013                [Page 5]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -332,7 +332,7 @@ Internet-Draft      Default Perimeter Identification         August 2012
 
 
 
-Kline                   Expires February 4, 2013                [Page 6]
+Kline                   Expires February 8, 2013                [Page 6]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -363,11 +363,12 @@ Internet-Draft      Default Perimeter Identification         August 2012
 4.5.  Links that are fundamentally point-to-point in nature
 
    Most home networking technology supports more than two nodes on the
-   same logical link communicating directly.  By default, traffic
-   traversing from such a "shared access" link which is classified as
-   interior to one which is fundamentally point-to-point in nature (e.g.
-   PPPoE, PPPoA, or some other future link type) SHOULD be considered as
-   transiting a perimeter.
+   same link communicating directly.  By default, traffic traversing
+   from such a "shared access" link which is classified as interior to
+   one which is fundamentally point-to-point in nature (e.g.  PPPoE,
+   PPPoA, Non-Broadcast Multiple Access (NBMA [RFC2491]) technologies,
+   or some other future link type) SHOULD be considered as transiting a
+   perimeter.
 
    Additionally, traffic transiting a homenet device from such a "shared
    access" link which is classified as interior to one on which no on-
@@ -378,21 +379,22 @@ Internet-Draft      Default Perimeter Identification         August 2012
    perimeter.
 
    HELP: what does this mean for 6lowpan networks inside the home?
+   Perhaps just product-defined interface catch-all suffices...
 
 
 5.  IP over Ethernet
 
    The ubiquity of IPoE undoubtedly greatly simplifies network
-   architectures and node requirements for connecting to such networks.
-   However, it can be difficult at best for a homenet device to
 
 
 
-Kline                   Expires February 4, 2013                [Page 7]
+Kline                   Expires February 8, 2013                [Page 7]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
 
+   architectures and node requirements for connecting to such networks.
+   However, it can be difficult at best for a homenet device to
    determine if it is fully in the interior of a network or part of the
    perimeter.
 
@@ -439,16 +441,16 @@ Internet-Draft      Default Perimeter Identification         August 2012
 
    By way of contrast, consider an entirely interior router which also
    has a VPN interface, through which traffic may be passed to, say, a
-   resident's company network.  While a VPN virtual interface SHOULD be
-   considered a logical demarcation point, the physical interface
 
 
 
-Kline                   Expires February 4, 2013                [Page 8]
+Kline                   Expires February 8, 2013                [Page 8]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
 
+   resident's company network.  While a VPN virtual interface SHOULD be
+   considered a logical demarcation point, the physical interface
    through which VPN-encapsulated traffic is transmitted need not
    necessarily be classified as such.  Instead, what may be desired is
    that traffic to/from interfaces that are interior to this VPN-enabled
@@ -494,15 +496,18 @@ Internet-Draft      Default Perimeter Identification         August 2012
    Japan Rail (JR) Shinkansen ("bullet train").
 
 
+
+
+
+
+Kline                   Expires February 8, 2013                [Page 9]
+
+Internet-Draft      Default Perimeter Identification         August 2012
+
+
 8.  IANA Considerations
 
    This memo includes no request to IANA.
-
-
-
-Kline                   Expires February 4, 2013                [Page 9]
-
-Internet-Draft      Default Perimeter Identification         August 2012
 
 
 9.  Security Considerations
@@ -523,6 +528,10 @@ Internet-Draft      Default Perimeter Identification         August 2012
    [RFC1918]  Rekhter, Y., Moskowitz, R., Karrenberg, D., Groot, G., and
               E. Lear, "Address Allocation for Private Internets",
               BCP 5, RFC 1918, February 1996.
+
+   [RFC2491]  Armitage, G., Schulter, P., Jork, M., and G. Harter, "IPv6
+              over Non-Broadcast Multiple Access (NBMA) networks",
+              RFC 2491, January 1999.
 
    [RFC3552]  Rescorla, E. and B. Korver, "Guidelines for Writing RFC
               Text on Security Considerations", BCP 72, RFC 3552,
@@ -547,16 +556,7 @@ Appendix A.  Additional Stuff
 
 
 
-
-
-
-
-
-
-
-
-
-Kline                   Expires February 4, 2013               [Page 10]
+Kline                   Expires February 8, 2013               [Page 10]
 
 Internet-Draft      Default Perimeter Identification         August 2012
 
@@ -612,5 +612,5 @@ Author's Address
 
 
 
-Kline                   Expires February 4, 2013               [Page 11]
+Kline                   Expires February 8, 2013               [Page 11]
 
