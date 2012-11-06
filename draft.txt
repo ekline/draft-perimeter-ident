@@ -2,15 +2,19 @@
 
 
 Home Networking                                                 E. Kline
-Internet-Draft                                               Google Inc.
+Internet-Draft                                              Google Japan
 Intended status: Informational                          November 6, 2012
 Expires: May 10, 2013
 
 
                        Default Border Definition
-               draft-homenet-kline-default-perimeter-00+
+                draft-homenet-kline-default-perimeter-01
 
 Abstract
+
+   TODO: Loop detection?
+
+   TODO: Mention Mark's L2 security...
 
    Automatic, simple identification of when traffic is crossing a
    perimeter is highly desirable for a variety of home network uses.
@@ -21,12 +25,6 @@ Abstract
    implementation implications.  One fundamental implication is that the
    active definition of a home network's interior is no more secure than
    its policy for forming homenet routing protocol adjacencies.
-
-   TODO: Loop detection.
-
-   TODO: Mention Mark's L2 security...
-
-   TODO: Mark's VPN explicit mention
 
 Status of this Memo
 
@@ -50,6 +48,8 @@ Copyright Notice
    Copyright (c) 2012 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
+   This document is subject to BCP 78 and the IETF Trust's Legal
+
 
 
 Kline                     Expires May 10, 2013                  [Page 1]
@@ -57,7 +57,6 @@ Kline                     Expires May 10, 2013                  [Page 1]
 Internet-Draft          Default Border Definition          November 2012
 
 
-   This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
@@ -72,27 +71,28 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 3
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . . . 3
-   2.  XXX Terminology . . . . . . . . . . . . . . . . . . . . . . . . 3
-   3.  Dynamically defining the border . . . . . . . . . . . . . . . . 4
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+   3.  Dynamically determining the border  . . . . . . . . . . . . . . 4
      3.1.  Collect information about neighboring routers . . . . . . . 5
      3.2.  Classify next hops  . . . . . . . . . . . . . . . . . . . . 5
-     3.3.  Classify interfaces . . . . . . . . . . . . . . . . . . . . 5
+     3.3.  Classify interfaces . . . . . . . . . . . . . . . . . . . . 6
        3.3.1.  Mixed mode  . . . . . . . . . . . . . . . . . . . . . . 6
+     3.4.  State changes and logging . . . . . . . . . . . . . . . . . 6
    4.  Fixed-category interfaces . . . . . . . . . . . . . . . . . . . 6
-     4.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . 6
-   5.  XXX Security stance . . . . . . . . . . . . . . . . . . . . . . 7
-   6.  TODO  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
-   7.  Fundamental recommendations . . . . . . . . . . . . . . . . . . 7
-     7.1.  Network node default security practices . . . . . . . . . . 7
-     7.2.  State changes and logging . . . . . . . . . . . . . . . . . 8
-   8.  Useful perimeter signals  . . . . . . . . . . . . . . . . . . . 8
-   9.  Security Considerations . . . . . . . . . . . . . . . . . . . . 8
-   10. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 8
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 9
-   12. References  . . . . . . . . . . . . . . . . . . . . . . . . . . 9
-     12.1. Normative References  . . . . . . . . . . . . . . . . . . . 9
-     12.2. Informative References  . . . . . . . . . . . . . . . . . . 9
+     4.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . 7
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . . . 7
+     5.1.  Network node default security practices . . . . . . . . . . 7
+     5.2.  XXX Security of adjacency formation . . . . . . . . . . . . 8
+     5.3.  XXX Security stance . . . . . . . . . . . . . . . . . . . . 8
+     5.4.  XXX . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 8
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 9
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . . . 9
+     8.2.  Informative References  . . . . . . . . . . . . . . . . . . 9
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . . . 9
+
+
 
 
 
@@ -143,14 +143,17 @@ Internet-Draft          Default Border Definition          November 2012
    document are to be interpreted as described in RFC 2119 [RFC2119].
 
 
-2.  XXX Terminology
+2.  Terminology
 
-   Fundamentally the In order to address perimeter identification at a
-   manageable scale the scope has been limited to discussing concepts of
-   "interior", "exterior", and "perimeter".  Working definitions in use
-   by this document are as follows.
+   In order to address border determination at a manageable scale the
+   scope has been limited to discussing concepts of "interior",
+   "exterior", and "border".  Documents may reference any of the terms
+   "internal", "interior", "external", or "exterior" as required by
+   grammar (adjective versus noun use cases).  Definitions in use by
+   this document are as follows.
 
    Internal/Interior
+
        The interior is broadly defined to include the collection of
        interfaces (physical or virtual), nodes, and forwarding next hops
        collectively under the control of a single logical administrative
@@ -161,39 +164,43 @@ Internet-Draft          Default Border Definition          November 2012
 
 
 
-
-
-
 Kline                     Expires May 10, 2013                  [Page 3]
 
 Internet-Draft          Default Border Definition          November 2012
 
 
    External/Exterior
+
        The exterior is broadly defined to include all interfaces
        (physical or virtual), nodes, and forwarding next hops
        collectively NOT under the control of any single logical
        administrative domain and specifically NOT under the control of
        the administrative domain which defines the interior.
 
-   Documents may reference any of the terms "internal", "interior",
-   "external", or "exterior" as required by grammar (adjective versus
-   noun use cases).
+   Border/Perimeter
+
+       The border is taken to be the collection of all ephemeral
+       demarcations within the collection of interior nodes which
+       forward traffic such that any IP packet transiting that
+       demarcation can be said to be crossing either from the interior
+       toward the exterior or from the exterior toward the interior.
+       This is independent of whether or not such traffic is permitted
+       by policy to complete its transiting from one zone to the other.
 
    Additionally, some implementations MAY choose to support handling
    questionable home network configurations which result in an interface
    qualifying for both interior and exterior classification
    simultaneously.  Requirements for this are discussed further below.
 
-   XXX Expressly not discussed herein are architectures having multiple
-   interior networks, nor the relationships between them as separate
-   from their relationship to their common exterior or any common
-   perimeter.  The architectures under discussion have a single
-   interior, single exterior, and a single logical perimeter between
-   them.
+   Expressly not considered by this document are architectures having
+   multiple interior networks, nor the relationships between them as
+   separate from their relationship to their common exterior or any
+   common border (e.g. a hierarchy of internal networks).  This document
+   is solely concerned with a single interior, a single exterior, and a
+   single logical perimeter between the two.
 
 
-3.  Dynamically defining the border
+3.  Dynamically determining the border
 
    Homenet routers may support interfaces which attempt to learn the
    nature of their relationship to neighboring routers, and determine
@@ -210,13 +217,6 @@ Internet-Draft          Default Border Definition          November 2012
    1.  Continously collect information on all interfaces about
        neighboring routers (including manually configured routers).
 
-   2.  Classify next hops as either "internal" or "external" primarily
-       by homenet router protocol adjacency status.
-
-   3.  Classify interfaces according to the nature of their next hops.
-
-   Manually configured next hops MUST also have their classification as
-   either "internal" or "external" explicitly specified.  As such, they
 
 
 
@@ -225,6 +225,13 @@ Kline                     Expires May 10, 2013                  [Page 4]
 Internet-Draft          Default Border Definition          November 2012
 
 
+   2.  Classify next hops as either "internal" or "external" primarily
+       by homenet router protocol adjacency status.
+
+   3.  Classify interfaces according to the nature of their next hops.
+
+   Manually configured next hops MUST also have their classification as
+   either "internal" or "external" explicitly specified.  As such, they
    can be considered to be of a fixed category, and on-going evaluation
    is NOT required.
 
@@ -264,6 +271,16 @@ Internet-Draft          Default Border Definition          November 2012
    All other routers with which no homenet routing protocol adjacency is
    successfully established MUST be considered "external".
 
+
+
+
+
+
+Kline                     Expires May 10, 2013                  [Page 5]
+
+Internet-Draft          Default Border Definition          November 2012
+
+
 3.3.  Classify interfaces
 
    An interface with no "external" next hops SHOULD be categorized as
@@ -273,14 +290,6 @@ Internet-Draft          Default Border Definition          November 2012
    homenet routing protocol adjacent peers, or any combination thereof.
 
    An interface with next hops all of which are categorized as
-
-
-
-Kline                     Expires May 10, 2013                  [Page 5]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
    "external" MUST be categorized as "external".
 
 3.3.1.  Mixed mode
@@ -296,6 +305,20 @@ Internet-Draft          Default Border Definition          November 2012
    relevant notification of this configuration, preferrably with
    recommendations for resolution.
 
+3.4.  State changes and logging
+
+   Home routers performing dynamic border discovery MUST continuously
+   evaluate the interior and exterior classifications of interfaces.
+   These may change at any time, for example if new devices are added
+   into the network or a power event causes all equipment to reset, and
+   specific ordering of device bring-up within a homenet network MAY NOT
+   be assumed.
+
+   Homenet routers performing dynamic border discovery SHOULD
+   administratively log the perimeter classification of all interfaces
+   (physical and virtual), the reason(s) for such classification, and
+   times at which such classifications are made or changed.
+
 
 4.  Fixed-category interfaces
 
@@ -306,6 +329,14 @@ Internet-Draft          Default Border Definition          November 2012
 
    Homenet routers MUST restrict relevant traffic on fixed-category
    interfaces according to their categorizations.  Specifically, they
+
+
+
+Kline                     Expires May 10, 2013                  [Page 6]
+
+Internet-Draft          Default Border Definition          November 2012
+
+
    MUST NOT originate traffic which could result in re-categorizing the
    interface IF the interface were dynamically attempting to learn its
    categorization.  For example, a fixed "external" interface MUST NOT
@@ -329,20 +360,53 @@ Internet-Draft          Default Border Definition          November 2012
    These SHOULD be classified as "exterior".
 
    Similarly, an implementation may consider the interface a mobile
-
-
-
-Kline                     Expires May 10, 2013                  [Page 6]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
    device uses to provide service to "tethering" clients to be a fixed-
    category interface.  Such interfaces SHOULD be classified as
    "interior".
 
 
-5.  XXX Security stance
+5.  Security Considerations
+
+   A key motivation for border identification is the application of
+   security policies which can take into account classifications of
+   interior, exterior, and when the transition from one the other
+   occurs.  XXX Some fundamental recommendations for nodes operating in
+   this environment follow.
+
+   At all times implementers MUST remain mindful of current recommended
+   best practices, including RFC 4864 [RFC4864], RFC 4890 [RFC4890], RFC
+   6092 [RFC6092], and others.
+
+5.1.  Network node default security practices
+
+   By default all network nodes SHOULD follow best current security
+   practices.  Any node may at times find itself in a hostile
+   environment.  This is obviously true of mobile nodes, for example,
+   when connecting to any public "Wi-Fi" network.  This is, of course,
+   equally true of more traditionally "fixed" nodes.  Any compromised
+   neighbor node ("fixed" or mobile) may be used as a conduit for
+
+
+
+Kline                     Expires May 10, 2013                  [Page 7]
+
+Internet-Draft          Default Border Definition          November 2012
+
+
+   further compromise.  Indeed, one study of a captured "botnet"
+   ([TORPIG], section 5.2.4) found that roughly 78.9% of infected hosts
+   had RFC 1918 [RFC1918] addresses, commmonly used in IPv4 NAT
+   deployments.
+
+5.2.  XXX Security of adjacency formation
+
+   A physically or cryptographically authenticated routing protocol may
+   be the highest fidelity signal for determining the interior, and
+   thereby the exterior and perimeter.
+
+   XXX validating DHCP server, anyone?
+
+5.3.  XXX Security stance
 
    filter policies that enable good things, ICMPv6+zospf+dhcpv6+...
 
@@ -360,80 +424,13 @@ Internet-Draft          Default Border Definition          November 2012
    !{homenets} permit from:!{homenets} to:{homenets} established permit
    from:{homenets} to:{homenets} deny all
 
-
-6.  TODO
-
-   BREAK
-
-
-7.  Fundamental recommendations
-
-   The application of security policies at the perimeter and possible
-   relaxation of security policies within the interior are apt to have
-   administrative consequences.  Some fundamental recommendations for
-   nodes operating in this environment follow.
-
-   Implementors should remain mindful of recommended practices, e.g.
-   RFC 4864 [RFC4864], RFC 4890 [RFC4890], RFC 6092 [RFC6092], et
-   cetera.
-
-7.1.  Network node default security practices
-
-   By default all network nodes SHOULD follow best current security
-   practices.  Any node may at times find itself in a hostile
-   environment.  This is obviously true of mobile nodes when, for
-   instance, connecting to a variety of public "Wi-Fi" networks.  In
-   such environments mobile nodes cannot be sure that there is any
-   network device acting in the mobile node's own best security
-
-
-
-Kline                     Expires May 10, 2013                  [Page 7]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
-   interests with respect to others on the local network.
-
-   It is equally true of more traditionally "fixed" nodes: any
-   compromised neighbor nodes ("fixed" or mobile) may be used as a
-   conduit for further compromise.  Indeed, one study of a captured
-   "botnet" ([TORPIG], section 5.2.4) found that roughly 78.9% of
-   infected hosts had RFC 1918 [RFC1918] addresses, commmonly used in
-   IPv4 NAT deployments.
-
-7.2.  State changes and logging
-
-   Devices conforming to this and other homenet documents MUST
-   continuously evaluate the interior, exterior, and perimeter
-   classifications of interfaces and traffic.  These may change at any
-   time, for example if new devices are added into the network or a
-   power event causes all equipment to reset, and specific ordering of
-   device bring-up within a homenet network MAY NOT be assumed.
-
-   Nodes compliant with this and other homenet documents SHOULD
-   administratively log the perimeter classification of interfaces (both
-   physical and virtual), the reason(s) for such classification, and
-   times at which such classifications are made or changed.
-
-
-8.  Useful perimeter signals
-
-   Nevertheless there are some signals that may be useful.  Which
-   signals are available and useful vary with the access architecture,
-   and in some cases there may be virtually no reliable information to
-   securely determine a perimeter.  An physically or cryptographically
-   authenticated routing protocol may be the highest fidelity signal for
-   determining the interior, and thereby the exterior and perimeter.
-
-
-9.  Security Considerations
+5.4.  XXX
 
    All drafts are required to have a security considerations section.
    See RFC 3552 [RFC3552] for a guide.
 
 
-10.  Acknowledgements
+6.  Acknowledgements
 
    Many thanks for the constructive input and criticism of Shwetha
    Bhandari, Lorenzo Colitti, Markus Stenberg, Mark Townsley, and Ole
@@ -444,24 +441,27 @@ Internet-Draft          Default Border Definition          November 2012
 
 
 
+
+
+
 Kline                     Expires May 10, 2013                  [Page 8]
 
 Internet-Draft          Default Border Definition          November 2012
 
 
-11.  IANA Considerations
+7.  IANA Considerations
 
    This memo includes no request to IANA.
 
 
-12.  References
+8.  References
 
-12.1.  Normative References
+8.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
-12.2.  Informative References
+8.2.  Informative References
 
    [RFC1918]  Rekhter, Y., Moskowitz, R., Karrenberg, D., Groot, G., and
               E. Lear, "Address Allocation for Private Internets",
@@ -508,7 +508,7 @@ Internet-Draft          Default Border Definition          November 2012
 Author's Address
 
    Erik Kline
-   Google Inc.
+   Google Japan
    Roppongi 6-10-1, 26th Floor
    Minato, Tokyo  106-6126
    JP

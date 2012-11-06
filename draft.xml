@@ -34,7 +34,7 @@
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="info"
-     docName="draft-homenet-kline-default-perimeter-00+"
+     docName="draft-homenet-kline-default-perimeter-01"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
        ipr values: trust200902, noModificationTrust200902,
@@ -54,7 +54,7 @@ Default Border Definition
     <!-- Another author who claims to be an editor -->
 
     <author fullname="Erik Kline" initials="E." surname="Kline">
-      <organization>Google Inc.</organization>
+      <organization>Google Japan</organization>
 
       <address>
         <postal>
@@ -97,10 +97,11 @@ Default Border Definition
          keywords will be used for the search engine. -->
 
     <abstract>
+      <t>TODO: Loop detection?</t>
+      <t>TODO: Mention Mark's L2 security...</t>
       <t>
 Automatic, simple identification of when traffic is crossing a perimeter
 is highly desirable for a variety of home network uses.
-
 This document describes how to use homenet routing protocol adjancenies as the
 primary signal of a common administrative domain (e.g. "the home").
 Classification of interfaces et cetera as internal or external follow from
@@ -108,9 +109,6 @@ this, as do various policy and implementation implications.  One fundamental
 implication is that the active definition of a home network's interior is no
 more secure than its policy for forming homenet routing protocol adjacencies.
       </t>
-      <t>TODO: Loop detection.</t>
-      <t>TODO: Mention Mark's L2 security...</t>
-      <t>TODO: Mark's VPN explicit mention</t>
     </abstract>
   </front>
 
@@ -148,19 +146,19 @@ more secure than its policy for forming homenet routing protocol adjacencies.
     </section>
 
 
-    <section title="XXX Terminology">
+    <section title="Terminology">
       <t>
-Fundamentally the
-
-In order to address perimeter identification at a manageable scale the scope
+In order to address border determination at a manageable scale the scope
 has been limited to discussing concepts of "interior", "exterior", and
-"perimeter".  Working definitions in use by this document are as follows.
+"border".  Documents may reference any of the terms "internal", "interior",
+"external", or "exterior" as required by grammar (adjective versus noun use
+cases).  Definitions in use by this document are as follows.
       </t>
 
       <t>
         <list hangIndent="4" style="hanging">
           <t hangText="Internal/Interior">
-          <vspace blankLines="0" />
+          <vspace blankLines="1" />
 The interior is broadly defined to include the collection of interfaces
 (physical or virtual), nodes, and forwarding next hops collectively under the
 control of a single logical administrative domain.  This document uses the
@@ -169,18 +167,23 @@ logical administrative domain.
           </t>
 
           <t hangText="External/Exterior">
-          <vspace blankLines="0" />
+          <vspace blankLines="1" />
 The exterior is broadly defined to include all interfaces (physical or virtual),
 nodes, and forwarding next hops collectively NOT under the control of any
 single logical administrative domain and specifically NOT under the control
 of the administrative domain which defines the interior.
           </t>
-        </list>
-      </t>
 
-      <t>
-Documents may reference any of the terms "internal", "interior", "external",
-or "exterior" as required by grammar (adjective versus noun use cases).
+          <t hangText="Border/Perimeter">
+          <vspace blankLines="1" />
+The border is taken to be the collection of all ephemeral demarcations
+within the collection of interior nodes which forward traffic such that
+any IP packet transiting that demarcation can be said to be crossing either
+from the interior toward the exterior or from the exterior toward the interior.
+This is independent of whether or not such traffic is permitted by policy to
+complete its transiting from one zone to the other.
+          </t>
+        </list>
       </t>
 
       <t>
@@ -191,23 +194,20 @@ are discussed further below.
       </t>
 
       <t>
-XXX
-
-Expressly not discussed herein are architectures having multiple interior
-networks, nor the relationships between them as separate from their
-relationship to their common exterior or any common perimeter.  The
-architectures under discussion have a single interior, single exterior,
-and a single logical perimeter between them.
+Expressly not considered by this document are architectures having multiple
+interior networks, nor the relationships between them as separate from their
+relationship to their common exterior or any common border (e.g. a hierarchy
+of internal networks).  This document is solely concerned with a single
+interior, a single exterior, and a single logical perimeter between the two.
       </t>
     </section>
 
-    <section title="Dynamically defining the border">
+    <section title="Dynamically determining the border">
       <t>
 Homenet routers may support interfaces which attempt to learn the nature of
 their relationship to neighboring routers, and determine where the border
 between the "interior" and the "exterior" lies.
       </t>
-
       <t>
 Interfaces which have not yet determined their categorization may consider
 themselves to be in a "learning" state, where no traffic is routed but
@@ -235,10 +235,9 @@ Classify interfaces according to the nature of their next hops.
 
       <t>
 Manually configured next hops MUST also have their classification as either
-"internal" or "external" explicitly specified.  As such, they can be considered
-to be of a fixed category, and on-going evaluation is NOT required.
+"internal" or "external" explicitly specified.  As such, they can be
+considered to be of a fixed category, and on-going evaluation is NOT required.
       </t>
-
       <t>
 Policies of various sorts can be applied and updated as appropriate based on
 these classifications, as and when they are determined.
@@ -313,6 +312,22 @@ this configuration, preferrably with recommendations for resolution.
           </t>
         </section>
       </section>
+
+      <section title="State changes and logging">
+        <t>
+Home routers performing dynamic border discovery MUST continuously evaluate
+the interior and exterior classifications of interfaces.  These may change at
+any time, for example if new devices are added into the network or a power
+event causes all equipment to reset, and specific ordering of device
+bring-up within a homenet network MAY NOT be assumed.
+        </t>
+        <t>
+Homenet routers performing dynamic border discovery SHOULD administratively
+log the perimeter classification of all interfaces (physical and virtual),
+the reason(s) for such classification, and times at which such classifications
+are made or changed.
+        </t>
+      </section>
     </section>
 
     <section title="Fixed-category interfaces">
@@ -357,23 +372,69 @@ Such interfaces SHOULD be classified as "interior".
       </section>
     </section>
 
-    <section title="XXX Security stance">
+    <section anchor="Security" title="Security Considerations">
       <t>
-filter policies that enable good things, ICMPv6+zospf+dhcpv6+...
+A key motivation for border identification is the application of security
+policies which can take into account classifications of interior, exterior,
+and when the transition from one the other occurs.
+
+XXX
+
+Some fundamental recommendations for nodes operating in this
+environment follow.
+      </t>
+
+      <t>
+At all times implementers MUST remain mindful of current recommended
+best practices, including
+<xref target="RFC4864">RFC 4864</xref>,
+<xref target="RFC4890">RFC 4890</xref>,
+<xref target="RFC6092">RFC 6092</xref>,
+and others.
+     </t>
+
+      <section title="Network node default security practices">
+        <t>
+By default all network nodes SHOULD follow best current security practices.
+Any node may at times find itself in a hostile environment.  This is obviously
+true of mobile nodes, for example, when connecting to any public "Wi-Fi"
+network.  This is, of course, equally true of more traditionally "fixed" nodes.
+Any compromised neighbor node ("fixed" or mobile) may be used as a conduit for
+further compromise.  Indeed, one study of a captured "botnet"
+(<xref target="TORPIG" />, section 5.2.4) found that roughly 78.9% of infected
+hosts had <xref target="RFC1918">RFC 1918</xref> addresses, commmonly used in
+IPv4 NAT deployments.
+        </t>
+      </section>
+
+    <section title="XXX Security of adjacency formation">
+      <t>
+A physically or cryptographically authenticated routing protocol
+may be the highest fidelity signal for determining the interior, and thereby
+the exterior and perimeter.
       </t>
       <t>
+XXX validating DHCP server, anyone?
+      </t>
+      </section>
+
+      <section title="XXX Security stance">
+        <t>
+filter policies that enable good things, ICMPv6+zospf+dhcpv6+...
+        </t>
+        <t>
 All interior interfaces can apply stateless filters (internal routing
 changes shouldn't break internal flows):
 deny from:!{homenets} to:!{homenets}
 permit all
-      </t>
-      <t>
+        </t>
+        <t>
 All exterior interfaces can apply stateful filters
 permit from:{homenets} to:!{homenets}
 permit from:!{homenets} to:{homenets} established
 deny all
-      </t>
-      <t>
+        </t>
+        <t>
 Mixed interfaces can apply stateless filters to internal traffic.  This
 permits spoofed source address packets sent from the exterior to the interior
 to bypass stateful filtering.
@@ -381,110 +442,17 @@ permit from:{homenets} to:!{homenets}
 permit from:!{homenets} to:{homenets} established
 permit from:{homenets} to:{homenets}
 deny all
-      </t>
-    </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<section title="TODO"><t>BREAK</t></section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <section title="Fundamental recommendations">
-      <t>
-The application of security policies at the perimeter and possible relaxation
-of security policies within the interior are apt to have administrative
-consequences.  Some fundamental recommendations for nodes operating in this
-environment follow.
-      </t>
-
-      <t>
-Implementors should remain mindful of recommended practices,
-e.g. <xref target="RFC4864">RFC 4864</xref>,
-<xref target="RFC4890">RFC 4890</xref>,
-<xref target="RFC6092">RFC 6092</xref>,
-et cetera.
-     </t>
-
-      <section title="Network node default security practices">
-        <t>
-By default all network nodes SHOULD follow best current security practices.
-Any node may at times find itself in a hostile environment.  This is obviously
-true of mobile nodes when, for instance, connecting to a variety of public
-"Wi-Fi" networks.  In such environments mobile nodes cannot be sure that there
-is any network device acting in the mobile node's own best security interests
-with respect to others on the local network.
-        </t>
-        <t>
-It is equally true of more traditionally "fixed" nodes: any compromised
-neighbor nodes ("fixed" or mobile) may be used as a conduit for further
-compromise.  Indeed, one study of a captured "botnet"
-(<xref target="TORPIG" />, section 5.2.4) found that roughly 78.9% of infected
-hosts had <xref target="RFC1918">RFC 1918</xref> addresses, commmonly used in
-IPv4 NAT deployments.
         </t>
       </section>
-
-      <section title="State changes and logging">
-        <t>
-Devices conforming to this and other homenet documents MUST continuously
-evaluate the interior, exterior, and perimeter classifications of interfaces
-and traffic.  These may change at any time, for example if new devices are
-added into the network or a power event causes all equipment to reset, and
-specific ordering of device bring-up within a homenet network MAY NOT be
-assumed.
-        </t>
-        <t>
-Nodes compliant with this and other homenet documents SHOULD administratively
-log the perimeter classification of interfaces (both physical and virtual),
-the reason(s) for such classification, and times at which such classifications
-are made or changed.
-        </t>
-      </section>
-    </section>
-
-    <section title="Useful perimeter signals">
-      <t>
-Nevertheless there are some signals that may be useful.  Which signals are
-available and useful vary with the access architecture, and in some cases
-there may be virtually no reliable information to securely determine a
-perimeter.  An physically or cryptographically authenticated routing protocol
-may be the highest fidelity signal for determining the interior, and thereby
-the exterior and perimeter.
-      </t>
-    </section>
-
-    <section anchor="Security" title="Security Considerations">
-      <t>All drafts are required to have a security considerations section.
-      See <xref target="RFC3552">RFC 3552</xref> for a guide.</t>
-    </section>
-
 <!--
 -->
+      <section title="XXX">
+        <t>
+All drafts are required to have a security considerations section. See
+<xref target="RFC3552">RFC 3552</xref> for a guide.
+        </t>
+      </section>
+    </section>
 
     <!-- Possibly a 'Contributors' section ... -->
     <section anchor="Acknowledgements" title="Acknowledgements">
