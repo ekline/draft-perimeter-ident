@@ -4,8 +4,10 @@
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1918.xml">
   <!ENTITY RFC2119 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!--
   <!ENTITY RFC3552 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+-->
   <!ENTITY RFC4864 SYSTEM
     "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4864.xml">
   <!ENTITY RFC4890 SYSTEM
@@ -102,7 +104,7 @@ Automatic, simple identification of when traffic is crossing a perimeter
 is highly desirable for a variety of home network uses.
 <!--
   -->
-This document describes how to use homenet routing protocol adjancenies as the
+This document describes how to use homenet routing protocol adjacencies as the
 primary signal of a common administrative domain (e.g. "the home").
 Classification of interfaces et cetera as internal or external follow from
 this, as do various policy and implementation implications.  One fundamental
@@ -129,7 +131,7 @@ impractical, or may place arbitrary requirements upon the architecture where
 previously no such requirement existed.
       </t>
       <t>
-This document describes how to use homenet routing protocol adjancenies as the
+This document describes how to use homenet routing protocol adjacencies as the
 primary signal of a common administrative domain (e.g. "the home").
 Classification of interfaces et cetera as internal or external follow from
 this, as do various policy and implementation implications.  One fundamental
@@ -202,7 +204,7 @@ interior, a single exterior, and a single logical perimeter between the two.
       </t>
     </section>
 
-    <section title="Dynamically determining the border">
+    <section anchor="algorithm" title="Dynamically determining the border">
       <t>
 Homenet routers may support interfaces which attempt to learn the nature of
 their relationship to neighboring routers, and determine where the border
@@ -246,7 +248,7 @@ these classifications, as and when they are determined.
       <section title="Collect information about neighboring routers">
         <t>
 An interface (physical or virtual) which is configured to dynamically assess
-its internal or external classificaton MUST periodically probe for routing
+its internal or external classification MUST periodically probe for routing
 information on the link.  This includes sending Router Solicitations,
 DHCPv6 Prefix Delegation requests, and probing for homenet routing
 protocol-capable nodes.
@@ -257,7 +259,7 @@ Probing for routing information MUST be performed whenever the interface is
 logically up.  The periodicity of probes is protocol-dependent (e.g. subject
 to Router Advertisement lifetimes, DHCPv6 lease timers, or homenet routing
 protocol timers).  Wherever possible, implementations SHOULD limit the impact
-of probing by implementing mechanisms like exponential backoff.
+of probing by implementing mechanisms like exponential back-off.
         </t>
 
         <t>
@@ -300,7 +302,6 @@ an interface which has "downstream" routers for which this router is a
 Delegating Router, an interface with only homenet routing protocol adjacent
 peers, or any combination thereof.
         </t>
-
         <t>
 An interface with next hops all of which are categorized as "external"
 MUST be categorized as "external".
@@ -317,7 +318,7 @@ communicating to "upstream" ISP routers.
           <t>
 All homenet routers, whether this configuration is considered supported or
 not, MUST administratively log and provide product-relevant notification of
-this configuration, preferrably with recommendations for resolution.
+this configuration, preferably with recommendations for resolution.
           </t>
         </section>
       </section>
@@ -346,7 +347,6 @@ otherwise permanently categorized by the homenet router implementation as
 exclusively "internal" or exclusively "external" do not require any
 algorithm to determine their categorization.
       </t>
-
       <t>
 Homenet routers MUST restrict relevant traffic on fixed-category interfaces
 according to their categorizations.  Specifically, they MUST NOT originate
@@ -364,7 +364,6 @@ are labeled for their intended use, e.g. RJ-45 ports labeled "WAN" and "LAN"
 or symbols indicating "The Internet" and "inside the home".  Other examples
 include wireless routers with defined separate WLAN "home" and "guest" ESSIDs.
         </t>
-
         <t>
 Another set of examples of product-defined, fixed category interfaces are
 those which require subscriber credentials in order for that interface to
@@ -372,7 +371,6 @@ successfully pass general purpose traffic.  These include authenticated PPPoE
 sessions and 3G/LTE PDP contexts (e.g. requiring a SIM card associated with a
 valid customer account).  These SHOULD be classified as "exterior".
         </t>
-
         <t>
 Similarly, an implementation may consider the interface a mobile device uses
 to provide service to "tethering" clients to be a fixed-category interface.
@@ -385,24 +383,12 @@ Such interfaces SHOULD be classified as "interior".
       <t>
 A key motivation for border identification is the application of security
 policies which can take into account classifications of interior, exterior,
-and when the transition from one the other occurs.
-
-XXX
-
-Some fundamental recommendations for nodes operating in this
-environment follow.
+and the transition from one the other.  General remarks, comments on the
+security of the adjacencies which form the basis of border identification,
+and examples of potential policies which might be applied follow.
       </t>
 
-      <t>
-At all times implementers MUST remain mindful of current recommended
-best practices, including
-<xref target="RFC4864">RFC 4864</xref>,
-<xref target="RFC4890">RFC 4890</xref>,
-<xref target="RFC6092">RFC 6092</xref>,
-and others.
-     </t>
-
-      <section title="Network node default security practices">
+      <section title="Disclamatory remarks">
         <t>
 By default all network nodes SHOULD follow best current security practices.
 Any node may at times find itself in a hostile environment.  This is obviously
@@ -411,20 +397,83 @@ network.  This is, of course, equally true of more traditionally "fixed" nodes.
 Any compromised neighbor node ("fixed" or mobile) may be used as a conduit for
 further compromise.  Indeed, one study of a captured "botnet"
 (<xref target="TORPIG" />, section 5.2.4) found that roughly 78.9% of infected
-hosts had <xref target="RFC1918">RFC 1918</xref> addresses, commmonly used in
+hosts had <xref target="RFC1918">RFC 1918</xref> addresses, commonly used in
 IPv4 NAT deployments.
         </t>
+        <t>
+Though it goes without saying, at all times homenet implementers MUST remain
+mindful of best current security practices, including but not limited to
+<xref target="RFC4864">RFC 4864</xref>,
+<xref target="RFC4890">RFC 4890</xref>,
+<xref target="RFC6092">RFC 6092</xref>,
+and others.
+       </t>
       </section>
 
-    <section title="XXX Security of adjacency formation">
-      <t>
-A physically or cryptographically authenticated routing protocol
-may be the highest fidelity signal for determining the interior, and thereby
-the exterior and perimeter.
-      </t>
-      <t>
-XXX validating DHCP server, anyone?
-      </t>
+      <section title="Security of adjacency formation">
+        <t>
+The security of the border definition is limited by the security applied
+to the formation of homenet routing protocol adjacencies: the next hops with
+which a homenet router forms adjacencies are the next hops the router trusts
+with the application of interior policies.
+        </t>
+        <section anchor="secure_links"
+                 title="Secure links and authenticated adjacency formation">
+          <t>
+The trustworthiness of next hops during adjacency formation can be improved if
+the security of the link connecting them can be trusted.  Using encrypted link
+technologies like 802.1x or secured "Wi-Fi" ESSIDS when forming homenet
+adjacencies, or authenticating homenet next hops by physical or cryptographic
+mechanisms limits the ability of malicious nodes to join the homenet interior.
+          </t>
+        </section>
+        <section title="Unsecure links">
+          <t>
+In general IP over Ethernet connections, common to residential Internet
+(and countless other places like some in-room hotel network) service provider
+deployments, create the possibility of malicious nodes attempting to join
+the homenet interior.
+          </t>
+          <t>
+In a broad variety of circumstances users already implicitly trust unsecured
+links.  Residential subscribers generally trust that their ISP has properly
+isolated their connection from any neighbors; few if any subscribers
+validate the ISP's DHCP server in order to thwart a malicious neighbor
+intervening.
+          </t>
+          <t>
+In the event of a network with a single upstream where an interior next hop
+is formed instead of an external next hop, the homenet network as a whole
+would have detected no external next hops.  Homenet router networks in which
+there are no external next hops SHOULD administratively log this configuration
+and SHOULD provide a means to alert the user to this condition.  Note that for
+isolated networks of homenet routers (e.g. a lab network) this configuration
+is entirely valid.
+          </t>
+          <t>
+User notification alone is not sufficient protection for the homenet user, and
+will not correctly alert the user of a homenet with two upstream connections,
+one of which has mistakenly not categorized a next hop as external.  To
+better serve the homenet user, homenet routers are SHOULD follow one or more
+of the recommendations in <xref target="recs4unsecure"/>.
+          </t>
+        </section>
+        <section anchor="recs4unsecure" title="Recommendations">
+          <t>
+Homenet router implementations that support dynamic discovery of the border
+(i.e. have interfaces on which the dynamic border detection described in
+<xref target="algorithm"/> can be configured to operate) SHOULD support
+restricting homenet routing protocol adjacency formation to only next hops
+which meet some user-defined or user-verified authentication mechanism
+(including examples described in <xref target="secure_links"/>).
+          </t>
+          <t>
+Alternatively, implementations MAY incorporate a mechanism (possibly physical)
+whereby a homenet user can disable border detection on an interface which
+the user wishes to force into either an interior or exterior classification
+(e.g. a button to force an interface to be "external" only).
+          </t>
+        </section>
       </section>
 
       <section title="Example border-aware filtering policies">
@@ -434,7 +483,7 @@ it could dynamically maintain a single logical entity encompassing all
 current internal prefixes in use that can be treated as a whole
 (e.g. an access list).  Below are example filtering policies that might be
 applied by homenet routers with knowledge of both this prefix set and the
-interior/exterior classification of all interfaces.
+interior or exterior classification of all interfaces.
         </t>
         <t>
 The examples below use the string "{interior_nets}" for refer to the grouping
@@ -503,7 +552,7 @@ among interior next hops which may not have state, traffic between interior
 routers may not be well-served by stateful filtering.  One consequence for
 this policy on mixed-mode interfaces is that traffic from the exterior with
 spoofed source addresses from the "{interior_nets}" set of prefixes
-may be mistakely allowed into the home.
+may be mistakenly allowed into the home.
           </t>
           <t>
 Filter implementations which can incorporate knowledge of the previous and
@@ -515,13 +564,13 @@ next hop on the same mixed-mode interface.
         </section>
       </section>
 <!--
--->
       <section title="XXX">
         <t>
 All drafts are required to have a security considerations section. See
 <xref target="RFC3552">RFC 3552</xref> for a guide.
         </t>
       </section>
+-->
     </section>
 
     <!-- Possibly a 'Contributors' section ... -->
@@ -555,7 +604,9 @@ This memo includes no request to IANA.
 
       &RFC1918;
 
+<!--
       &RFC3552;
+-->
 
       &RFC4864;
 
