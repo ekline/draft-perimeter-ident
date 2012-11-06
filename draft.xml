@@ -97,11 +97,11 @@ Default Border Definition
          keywords will be used for the search engine. -->
 
     <abstract>
-      <t>TODO: Loop detection?</t>
-      <t>TODO: Mention Mark's L2 security...</t>
       <t>
 Automatic, simple identification of when traffic is crossing a perimeter
 is highly desirable for a variety of home network uses.
+<!--
+  -->
 This document describes how to use homenet routing protocol adjancenies as the
 primary signal of a common administrative domain (e.g. "the home").
 Classification of interfaces et cetera as internal or external follow from
@@ -258,6 +258,15 @@ logically up.  The periodicity of probes is protocol-dependent (e.g. subject
 to Router Advertisement lifetimes, DHCPv6 lease timers, or homenet routing
 protocol timers).  Wherever possible, implementations SHOULD limit the impact
 of probing by implementing mechanisms like exponential backoff.
+        </t>
+
+        <t>
+Homenet routers MUST be able to identify loops, e.g. when two (or more) of
+the router's own interfaces are connected on the same link.  Compliant routers
+MUST administratively log this misconfiguration, and SHOULD implement a
+mechanism that permits maximum continued homenet functionality if possible.
+For example, implementations MAY administratively disable all but one of
+looped interfaces.
         </t>
       </section>
 
@@ -418,31 +427,92 @@ XXX validating DHCP server, anyone?
       </t>
       </section>
 
-      <section title="XXX Security stance">
+      <section title="Example border-aware filtering policies">
         <t>
-filter policies that enable good things, ICMPv6+zospf+dhcpv6+...
+As a homenet router forms adjacencies and learns internal aggregate prefixes
+it could dynamically maintain a single logical entity encompassing all
+current internal prefixes in use that can be treated as a whole
+(e.g. an access list).  Below are example filtering policies that might be
+applied by homenet routers with knowledge of both this prefix set and the
+interior/exterior classification of all interfaces.
         </t>
         <t>
-All interior interfaces can apply stateless filters (internal routing
-changes shouldn't break internal flows):
-deny from:!{homenets} to:!{homenets}
-permit all
+The examples below use the string "{interior_nets}" for refer to the grouping
+of all internal aggregate prefixes.  The sample filtering policy rules are
+written in configuration pseudo-syntax that should hopefully be intuitive.
         </t>
-        <t>
-All exterior interfaces can apply stateful filters
-permit from:{homenets} to:!{homenets}
-permit from:!{homenets} to:{homenets} established
-deny all
-        </t>
-        <t>
-Mixed interfaces can apply stateless filters to internal traffic.  This
-permits spoofed source address packets sent from the exterior to the interior
-to bypass stateful filtering.
-permit from:{homenets} to:!{homenets}
-permit from:!{homenets} to:{homenets} established
-permit from:{homenets} to:{homenets}
-deny all
-        </t>
+
+        <section title="Anti-spoofing on internal interfaces">
+          <t>
+Given knowledge of all interior network prefixes and the categorization of
+interfaces, all interior interfaces could apply a stateless filter designed
+to prevent devices in the home from originating source-address-spoofed traffic.
+          </t>
+          <figure>
+            <preamble>
+Using a filter configuration pseudo-syntax:
+            </preamble>
+            <artwork>
+    from !{interior_nets} to !{interior_nets} deny
+    ... # permit or deny other kinds of traffic
+            </artwork>
+          </figure>
+        </section>
+
+        <section title="Stateful filtering on external interfaces">
+          <t>
+Given knowledge of all interior network prefixes and the categorization of
+interfaces, all exterior interfaces could apply a stateful filter designed
+to discard traffic without matching state in the homenet router.
+          </t>
+          <figure>
+            <preamble>
+Using a filter configuration pseudo-syntax:
+            </preamble>
+            <artwork>
+    ... # permit other kinds of good traffic first
+    from {interior_nets} to !{interior_nets} permit
+    from !{interior_nets} to {interior_nets} established permit
+    from any to any deny
+            </artwork>
+          </figure>
+        </section>
+
+        <section title="Mixed-mode interface filtering">
+          <t>
+Given knowledge of all interior network prefixes and the categorization of
+interfaces, all mixed-node interfaces could apply a stateful filter designed
+to discard exterior traffic without matching state in the homenet router
+and still statelessly permit internal traffic.
+          </t>
+          <figure>
+            <preamble>
+Using a filter configuration pseudo-syntax:
+            </preamble>
+            <artwork>
+    ... # permit other kinds of good traffic first
+    from {interior_nets} to !{interior_nets} permit
+    from !{interior_nets} to {interior_nets} established permit
+    from {interior_nets} to {interior_nets} permit
+    from any to any deny
+            </artwork>
+          </figure>
+          <t>
+Because routing changes elsewhere in the home may cause traffic to shift
+among interior next hops which may not have state, traffic between interior
+routers may not be well-served by stateful filtering.  One consequence for
+this policy on mixed-mode interfaces is that traffic from the exterior with
+spoofed source addresses from the "{interior_nets}" set of prefixes
+may be mistakely allowed into the home.
+          </t>
+          <t>
+Filter implementations which can incorporate knowledge of the previous and
+next hops and their classifications can design much more precise filters.
+Such implementations could deny traffic with "{interior_nets}" source
+addresses arriving from an exterior next hop, but permit them from an interior
+next hop on the same mixed-mode interface.
+          </t>
+        </section>
       </section>
 <!--
 -->

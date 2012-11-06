@@ -12,10 +12,6 @@ Expires: May 10, 2013
 
 Abstract
 
-   TODO: Loop detection?
-
-   TODO: Mention Mark's L2 security...
-
    Automatic, simple identification of when traffic is crossing a
    perimeter is highly desirable for a variety of home network uses.
    This document describes how to use homenet routing protocol
@@ -49,6 +45,10 @@ Copyright Notice
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
 
 
 
@@ -57,10 +57,6 @@ Kline                     Expires May 10, 2013                  [Page 1]
 Internet-Draft          Default Border Definition          November 2012
 
 
-   Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
-   publication of this document.  Please review these documents
-   carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
@@ -69,28 +65,32 @@ Internet-Draft          Default Border Definition          November 2012
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 3
-     1.1.  Requirements Language . . . . . . . . . . . . . . . . . . . 3
-   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . . . 3
-   3.  Dynamically determining the border  . . . . . . . . . . . . . . 4
-     3.1.  Collect information about neighboring routers . . . . . . . 5
-     3.2.  Classify next hops  . . . . . . . . . . . . . . . . . . . . 5
-     3.3.  Classify interfaces . . . . . . . . . . . . . . . . . . . . 6
-       3.3.1.  Mixed mode  . . . . . . . . . . . . . . . . . . . . . . 6
-     3.4.  State changes and logging . . . . . . . . . . . . . . . . . 6
-   4.  Fixed-category interfaces . . . . . . . . . . . . . . . . . . . 6
-     4.1.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . 7
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . . . 7
-     5.1.  Network node default security practices . . . . . . . . . . 7
-     5.2.  XXX Security of adjacency formation . . . . . . . . . . . . 8
-     5.3.  XXX Security stance . . . . . . . . . . . . . . . . . . . . 8
-     5.4.  XXX . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . 8
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 9
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . . . 9
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . . . 9
-     8.2.  Informative References  . . . . . . . . . . . . . . . . . . 9
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . . . 9
+   1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  3
+     1.1.  Requirements Language  . . . . . . . . . . . . . . . . . .  3
+   2.  Terminology  . . . . . . . . . . . . . . . . . . . . . . . . .  3
+   3.  Dynamically determining the border . . . . . . . . . . . . . .  4
+     3.1.  Collect information about neighboring routers  . . . . . .  5
+     3.2.  Classify next hops . . . . . . . . . . . . . . . . . . . .  5
+     3.3.  Classify interfaces  . . . . . . . . . . . . . . . . . . .  6
+       3.3.1.  Mixed mode . . . . . . . . . . . . . . . . . . . . . .  6
+     3.4.  State changes and logging  . . . . . . . . . . . . . . . .  6
+   4.  Fixed-category interfaces  . . . . . . . . . . . . . . . . . .  6
+     4.1.  Examples . . . . . . . . . . . . . . . . . . . . . . . . .  7
+   5.  Security Considerations  . . . . . . . . . . . . . . . . . . .  7
+     5.1.  Network node default security practices  . . . . . . . . .  8
+     5.2.  XXX Security of adjacency formation  . . . . . . . . . . .  8
+     5.3.  Example border-aware filtering policies  . . . . . . . . .  8
+       5.3.1.  Anti-spoofing on internal interfaces . . . . . . . . .  8
+       5.3.2.  Stateful filtering on external interfaces  . . . . . .  9
+       5.3.3.  Mixed-mode interface filtering . . . . . . . . . . . .  9
+     5.4.  XXX  . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+   6.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 10
+   7.  IANA Considerations  . . . . . . . . . . . . . . . . . . . . . 10
+   8.  References . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+     8.1.  Normative References . . . . . . . . . . . . . . . . . . . 10
+     8.2.  Informative References . . . . . . . . . . . . . . . . . . 10
+   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
 
 
 
@@ -253,6 +253,13 @@ Internet-Draft          Default Border Definition          November 2012
    possible, implementations SHOULD limit the impact of probing by
    implementing mechanisms like exponential backoff.
 
+   Homenet routers MUST be able to identify loops, e.g. when two (or
+   more) of the router's own interfaces are connected on the same link.
+   Compliant routers MUST administratively log this misconfiguration,
+   and SHOULD implement a mechanism that permits maximum continued
+   homenet functionality if possible.  For example, implementations MAY
+   administratively disable all but one of looped interfaces.
+
 3.2.  Classify next hops
 
    Routing information is used to categorize next hops as either
@@ -266,13 +273,6 @@ Internet-Draft          Default Border Definition          November 2012
    which no routing information is learned SHOULD be considered
    "internal".  This includes "downstream" routers for which the homenet
    router is acting as the Delegating Router via a DHCPv6 Prefix
-   Delegation exchange.
-
-   All other routers with which no homenet routing protocol adjacency is
-   successfully established MUST be considered "external".
-
-
-
 
 
 
@@ -280,6 +280,11 @@ Kline                     Expires May 10, 2013                  [Page 5]
 
 Internet-Draft          Default Border Definition          November 2012
 
+
+   Delegation exchange.
+
+   All other routers with which no homenet routing protocol adjacency is
+   successfully established MUST be considered "external".
 
 3.3.  Classify interfaces
 
@@ -324,11 +329,6 @@ Internet-Draft          Default Border Definition          November 2012
 
    Interfaces (physical or virtual) which have product-defined purposes
    or are otherwise permanently categorized by the homenet router
-   implementation as exclusively "internal" or exclusively "external" do
-   not require any algorithm to determine their categorization.
-
-   Homenet routers MUST restrict relevant traffic on fixed-category
-   interfaces according to their categorizations.  Specifically, they
 
 
 
@@ -337,6 +337,11 @@ Kline                     Expires May 10, 2013                  [Page 6]
 Internet-Draft          Default Border Definition          November 2012
 
 
+   implementation as exclusively "internal" or exclusively "external" do
+   not require any algorithm to determine their categorization.
+
+   Homenet routers MUST restrict relevant traffic on fixed-category
+   interfaces according to their categorizations.  Specifically, they
    MUST NOT originate traffic which could result in re-categorizing the
    interface IF the interface were dynamically attempting to learn its
    categorization.  For example, a fixed "external" interface MUST NOT
@@ -377,14 +382,9 @@ Internet-Draft          Default Border Definition          November 2012
    best practices, including RFC 4864 [RFC4864], RFC 4890 [RFC4890], RFC
    6092 [RFC6092], and others.
 
-5.1.  Network node default security practices
 
-   By default all network nodes SHOULD follow best current security
-   practices.  Any node may at times find itself in a hostile
-   environment.  This is obviously true of mobile nodes, for example,
-   when connecting to any public "Wi-Fi" network.  This is, of course,
-   equally true of more traditionally "fixed" nodes.  Any compromised
-   neighbor node ("fixed" or mobile) may be used as a conduit for
+
+
 
 
 
@@ -393,6 +393,14 @@ Kline                     Expires May 10, 2013                  [Page 7]
 Internet-Draft          Default Border Definition          November 2012
 
 
+5.1.  Network node default security practices
+
+   By default all network nodes SHOULD follow best current security
+   practices.  Any node may at times find itself in a hostile
+   environment.  This is obviously true of mobile nodes, for example,
+   when connecting to any public "Wi-Fi" network.  This is, of course,
+   equally true of more traditionally "fixed" nodes.  Any compromised
+   neighbor node ("fixed" or mobile) may be used as a conduit for
    further compromise.  Indeed, one study of a captured "botnet"
    ([TORPIG], section 5.2.4) found that roughly 78.9% of infected hosts
    had RFC 1918 [RFC1918] addresses, commmonly used in IPv4 NAT
@@ -406,23 +414,96 @@ Internet-Draft          Default Border Definition          November 2012
 
    XXX validating DHCP server, anyone?
 
-5.3.  XXX Security stance
+5.3.  Example border-aware filtering policies
 
-   filter policies that enable good things, ICMPv6+zospf+dhcpv6+...
+   As a homenet router forms adjacencies and learns internal aggregate
+   prefixes it could dynamically maintain a single logical entity
+   encompassing all current internal prefixes in use that can be treated
+   as a whole (e.g. an access list).  Below are example filtering
+   policies that might be applied by homenet routers with knowledge of
+   both this prefix set and the interior/exterior classification of all
+   interfaces.
 
-   All interior interfaces can apply stateless filters (internal routing
-   changes shouldn't break internal flows): deny from:!{homenets} to:
-   !{homenets} permit all
+   The examples below use the string "{interior_nets}" for refer to the
+   grouping of all internal aggregate prefixes.  The sample filtering
+   policy rules are written in configuration pseudo-syntax that should
+   hopefully be intuitive.
 
-   All exterior interfaces can apply stateful filters permit from:
-   {homenets} to:!{homenets} permit from:!{homenets} to:{homenets}
-   established deny all
+5.3.1.  Anti-spoofing on internal interfaces
 
-   Mixed interfaces can apply stateless filters to internal traffic.
-   This permits spoofed source address packets sent from the exterior to
-   the interior to bypass stateful filtering. permit from:{homenets} to:
-   !{homenets} permit from:!{homenets} to:{homenets} established permit
-   from:{homenets} to:{homenets} deny all
+   Given knowledge of all interior network prefixes and the
+   categorization of interfaces, all interior interfaces could apply a
+   stateless filter designed to prevent devices in the home from
+   originating source-address-spoofed traffic.
+
+   Using a filter configuration pseudo-syntax:
+
+       from !{interior_nets} to !{interior_nets} deny
+       ... # permit or deny other kinds of traffic
+
+
+
+
+Kline                     Expires May 10, 2013                  [Page 8]
+
+Internet-Draft          Default Border Definition          November 2012
+
+
+5.3.2.  Stateful filtering on external interfaces
+
+   Given knowledge of all interior network prefixes and the
+   categorization of interfaces, all exterior interfaces could apply a
+   stateful filter designed to discard traffic without matching state in
+   the homenet router.
+
+   Using a filter configuration pseudo-syntax:
+
+       ... # permit other kinds of good traffic first
+       from {interior_nets} to !{interior_nets} permit
+       from !{interior_nets} to {interior_nets} established permit
+       from any to any deny
+
+5.3.3.  Mixed-mode interface filtering
+
+   Given knowledge of all interior network prefixes and the
+   categorization of interfaces, all mixed-node interfaces could apply a
+   stateful filter designed to discard exterior traffic without matching
+   state in the homenet router and still statelessly permit internal
+   traffic.
+
+   Using a filter configuration pseudo-syntax:
+
+       ... # permit other kinds of good traffic first
+       from {interior_nets} to !{interior_nets} permit
+       from !{interior_nets} to {interior_nets} established permit
+       from {interior_nets} to {interior_nets} permit
+       from any to any deny
+
+   Because routing changes elsewhere in the home may cause traffic to
+   shift among interior next hops which may not have state, traffic
+   between interior routers may not be well-served by stateful
+   filtering.  One consequence for this policy on mixed-mode interfaces
+   is that traffic from the exterior with spoofed source addresses from
+   the "{interior_nets}" set of prefixes may be mistakely allowed into
+   the home.
+
+   Filter implementations which can incorporate knowledge of the
+   previous and next hops and their classifications can design much more
+   precise filters.  Such implementations could deny traffic with
+   "{interior_nets}" source addresses arriving from an exterior next
+   hop, but permit them from an interior next hop on the same mixed-mode
+   interface.
+
+
+
+
+
+
+
+Kline                     Expires May 10, 2013                  [Page 9]
+
+Internet-Draft          Default Border Definition          November 2012
+
 
 5.4.  XXX
 
@@ -438,15 +519,6 @@ Internet-Draft          Default Border Definition          November 2012
 
    Thanks also must go to pleasant, peaceful and productive trips on the
    Japan Rail (JR) Shinkansen ("bullet train").
-
-
-
-
-
-
-Kline                     Expires May 10, 2013                  [Page 8]
-
-Internet-Draft          Default Border Definition          November 2012
 
 
 7.  IANA Considerations
@@ -481,28 +553,19 @@ Internet-Draft          Default Border Definition          November 2012
    [RFC6092]  Woodyatt, J., "Recommended Simple Security Capabilities in
               Customer Premises Equipment (CPE) for Providing
               Residential IPv6 Internet Service", RFC 6092,
+
+
+
+Kline                     Expires May 10, 2013                 [Page 10]
+
+Internet-Draft          Default Border Definition          November 2012
+
+
               January 2011.
 
    [TORPIG]   Stone-Gross, B., "Your Botnet is My Botnet: Analysis of a
               Botnet Takeover", 2009, <http://www.cs.ucsb.edu/~seclab/
               projects/torpig/torpig.pdf>.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kline                     Expires May 10, 2013                  [Page 9]
-
-Internet-Draft          Default Border Definition          November 2012
 
 
 Author's Address
@@ -549,12 +612,5 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-Kline                     Expires May 10, 2013                 [Page 10]
+Kline                     Expires May 10, 2013                 [Page 11]
 
