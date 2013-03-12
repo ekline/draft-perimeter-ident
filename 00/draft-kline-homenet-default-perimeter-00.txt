@@ -3,12 +3,12 @@
 
 Home Networking                                                 E. Kline
 Internet-Draft                                              Google Japan
-Intended status: Informational                          November 6, 2012
-Expires: May 10, 2013
+Intended status: Informational                            March 12, 2013
+Expires: September 13, 2013
 
 
                        Default Border Definition
-                    draft-kline-default-perimeter-01
+                draft-kline-homenet-default-perimeter-00
 
 Abstract
 
@@ -37,11 +37,11 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 10, 2013.
+   This Internet-Draft will expire on September 13, 2013.
 
 Copyright Notice
 
-   Copyright (c) 2012 IETF Trust and the persons identified as the
+   Copyright (c) 2013 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -52,9 +52,9 @@ Copyright Notice
 
 
 
-Kline                     Expires May 10, 2013                  [Page 1]
+Kline                  Expires September 13, 2013               [Page 1]
 
-Internet-Draft          Default Border Definition          November 2012
+Internet-Draft          Default Border Definition             March 2013
 
 
    to this document.  Code Components extracted from this document must
@@ -74,16 +74,16 @@ Table of Contents
      3.3.  Classify interfaces  . . . . . . . . . . . . . . . . . . .  6
        3.3.1.  Mixed mode . . . . . . . . . . . . . . . . . . . . . .  6
      3.4.  State changes and logging  . . . . . . . . . . . . . . . .  6
-   4.  Fixed-category interfaces  . . . . . . . . . . . . . . . . . .  6
+   4.  Fixed-category interfaces  . . . . . . . . . . . . . . . . . .  7
      4.1.  Examples . . . . . . . . . . . . . . . . . . . . . . . . .  7
    5.  Security Considerations  . . . . . . . . . . . . . . . . . . .  7
-     5.1.  Disclamatory remarks . . . . . . . . . . . . . . . . . . .  7
+     5.1.  Disclamatory remarks . . . . . . . . . . . . . . . . . . .  8
      5.2.  Security of adjacency formation  . . . . . . . . . . . . .  8
        5.2.1.  Secure links and authenticated adjacency formation . .  8
        5.2.2.  Unsecure links . . . . . . . . . . . . . . . . . . . .  8
        5.2.3.  Recommendations  . . . . . . . . . . . . . . . . . . .  9
      5.3.  Example border-aware filtering policies  . . . . . . . . .  9
-       5.3.1.  Anti-spoofing on internal interfaces . . . . . . . . .  9
+       5.3.1.  Anti-spoofing on internal interfaces . . . . . . . . . 10
        5.3.2.  Stateful filtering on external interfaces  . . . . . . 10
        5.3.3.  Mixed-mode interface filtering . . . . . . . . . . . . 10
    6.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 11
@@ -108,9 +108,9 @@ Table of Contents
 
 
 
-Kline                     Expires May 10, 2013                  [Page 2]
+Kline                  Expires September 13, 2013               [Page 2]
 
-Internet-Draft          Default Border Definition          November 2012
+Internet-Draft          Default Border Definition             March 2013
 
 
 1.  Introduction
@@ -122,10 +122,10 @@ Internet-Draft          Default Border Definition          November 2012
 
    Many architectures make it difficult or impossible (by design) to
    detect administrative boundaries and rely on various mechanisms of
-   user or administrator invention to create or modify such boundaries.
-   Other hints about administrative boundaries can be insecure,
-   unreliable, operationally impractical, or may place arbitrary
-   requirements upon the architecture where previously no such
+   user or administrator intervention to create or modify such
+   boundaries.  Other hints about administrative boundaries can be
+   insecure, unreliable, operationally impractical, or may place
+   arbitrary requirements upon the architecture where previously no such
    requirement existed.
 
    This document describes how to use homenet routing protocol
@@ -164,9 +164,9 @@ Internet-Draft          Default Border Definition          November 2012
 
 
 
-Kline                     Expires May 10, 2013                  [Page 3]
+Kline                  Expires September 13, 2013               [Page 3]
 
-Internet-Draft          Default Border Definition          November 2012
+Internet-Draft          Default Border Definition             March 2013
 
 
    External/Exterior
@@ -208,9 +208,9 @@ Internet-Draft          Default Border Definition          November 2012
 
    Interfaces which have not yet determined their categorization may
    consider themselves to be in a "learning" state, where no traffic is
-   routed but probing continues.  Once nodes of any kind (e.g. either
+   routed but probing is performed.  Once nodes of any kind (e.g. either
    routers or hosts) are detected, classification takes place and the
-   router exits the "learning" state.
+   interface exits the "learning" state.
 
    The classification algorithm documented here is roughly:
 
@@ -220,9 +220,9 @@ Internet-Draft          Default Border Definition          November 2012
 
 
 
-Kline                     Expires May 10, 2013                  [Page 4]
+Kline                  Expires September 13, 2013               [Page 4]
 
-Internet-Draft          Default Border Definition          November 2012
+Internet-Draft          Default Border Definition             March 2013
 
 
    2.  Classify next hops as either "internal" or "external" primarily
@@ -230,21 +230,25 @@ Internet-Draft          Default Border Definition          November 2012
 
    3.  Classify interfaces according to the nature of their next hops.
 
-   Manually configured next hops MUST also have their classification as
-   either "internal" or "external" explicitly specified.  As such, they
-   can be considered to be of a fixed category, and on-going evaluation
-   is NOT required.
+   Manually configured next hops SHOULD also have their classification
+   as either "internal" or "external" explicitly specified.  As such,
+   they can be considered to be of a fixed category, and on-going
+   evaluation is NOT required.  If no "interior"/"exterior"
+   classification is specified the next hop MUST by default be
+   classified as "exterior".
 
-   Policies of various sorts can be applied and updated as appropriate
-   based on these classifications, as and when they are determined.
+   Numerous policies can be applied and updated as appropriate based on
+   these classifications, as and when they are determined.  Further
+   discussion of policy recommendations (except by example) is outside
+   the scope of this document.
 
 3.1.  Collect information about neighboring routers
 
    An interface (physical or virtual) which is configured to dynamically
    assess its internal or external classification MUST periodically
    probe for routing information on the link.  This includes sending
-   Router Solicitations, DHCPv6 Prefix Delegation requests, and probing
-   for homenet routing protocol-capable nodes.
+   Router Solicitations, DHCPv6 Prefix Delegation requests (or Renew
+   requests), and probing for homenet routing protocol-capable nodes.
 
    Probing for routing information MUST be performed whenever the
    interface is logically up.  The periodicity of probes is protocol-
@@ -253,12 +257,15 @@ Internet-Draft          Default Border Definition          November 2012
    possible, implementations SHOULD limit the impact of probing by
    implementing mechanisms like exponential back-off.
 
-   Homenet routers MUST be able to identify loops, e.g. when two (or
-   more) of the router's own interfaces are connected on the same link.
-   Compliant routers MUST administratively log this misconfiguration,
-   and SHOULD implement a mechanism that permits maximum continued
-   homenet functionality if possible.  For example, implementations MAY
-   administratively disable all but one of looped interfaces.
+   Homenet routers MUST be able to identify when two (or more) of the
+   router's interfaces are connected on to the same link, e.g. by
+   observing unique properties of a probe by which it can recognize
+   itself.  Compliant routers MUST administratively log this
+   configuration, and SHOULD implement a mechanism that permits maximum
+   continued homenet functionality if possible.  For example,
+   implementations MAY administratively disable all but one of the
+   interfaces in question or MAY treat the collection of interfaces as a
+   single logical interface in a manner suitable to the link type.
 
 3.2.  Classify next hops
 
@@ -266,22 +273,23 @@ Internet-Draft          Default Border Definition          November 2012
    "internal" or "external".
 
    Routers with which a homenet routing protocol adjacency is
+
+
+
+Kline                  Expires September 13, 2013               [Page 5]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
    successfully established MUST be considered "internal".
 
    Routers of which this homenet router has knowledge but with which no
    homenet routing protocol adjacency is successfully establish AND from
    which no routing information is learned SHOULD be considered
    "internal".  This includes "downstream" routers for which the homenet
-   router is acting as the Delegating Router via a DHCPv6 Prefix
-
-
-
-Kline                     Expires May 10, 2013                  [Page 5]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
-   Delegation exchange.
+   router may be acting as the Delegating Router via a DHCPv6 Prefix
+   Delegation exchange but which do not implement the homenet routing
+   protocol.
 
    All other routers with which no homenet routing protocol adjacency is
    successfully established MUST be considered "external".
@@ -305,6 +313,10 @@ Internet-Draft          Default Border Definition          November 2012
    two homenet routers form an adjacency with each other over the same
    interface they use for communicating to "upstream" ISP routers.
 
+   A homenet router by default SHOULD classify such "mixed mode"
+   interfaces as "external".  Transmitting "internal" communications
+   over interfaces with "external" nodes is NOT RECOMMENDED.
+
    All homenet routers, whether this configuration is considered
    supported or not, MUST administratively log and provide product-
    relevant notification of this configuration, preferably with
@@ -316,8 +328,16 @@ Internet-Draft          Default Border Definition          November 2012
    evaluate the interior and exterior classifications of interfaces.
    These may change at any time, for example if new devices are added
    into the network or a power event causes all equipment to reset, and
-   specific ordering of device bring-up within a homenet network MAY NOT
-   be assumed.
+   specific ordering of device bring-up within a homenet network MUST
+
+
+
+Kline                  Expires September 13, 2013               [Page 6]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
+   NOT be assumed.
 
    Homenet routers performing dynamic border discovery SHOULD
    administratively log the perimeter classification of all interfaces
@@ -329,14 +349,6 @@ Internet-Draft          Default Border Definition          November 2012
 
    Interfaces (physical or virtual) which have product-defined purposes
    or are otherwise permanently categorized by the homenet router
-
-
-
-Kline                     Expires May 10, 2013                  [Page 6]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
    implementation as exclusively "internal" or exclusively "external" do
    not require any algorithm to determine their categorization.
 
@@ -373,6 +385,14 @@ Internet-Draft          Default Border Definition          November 2012
 5.  Security Considerations
 
    A key motivation for border identification is the application of
+
+
+
+Kline                  Expires September 13, 2013               [Page 7]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
    security policies which can take into account classifications of
    interior, exterior, and the transition from one the other.  General
    remarks, comments on the security of the adjacencies which form the
@@ -385,14 +405,6 @@ Internet-Draft          Default Border Definition          November 2012
    practices.  Any node may at times find itself in a hostile
    environment.  This is obviously true of mobile nodes, for example,
    when connecting to any public "Wi-Fi" network.  This is, of course,
-
-
-
-Kline                     Expires May 10, 2013                  [Page 7]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
    equally true of more traditionally "fixed" nodes.  Any compromised
    neighbor node ("fixed" or mobile) may be used as a conduit for
    further compromise.  Indeed, one study of a captured "botnet"
@@ -429,6 +441,14 @@ Internet-Draft          Default Border Definition          November 2012
    nodes attempting to join the homenet interior.
 
    In a broad variety of circumstances users already implicitly trust
+
+
+
+Kline                  Expires September 13, 2013               [Page 8]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
    unsecured links.  Residential subscribers generally trust that their
    ISP has properly isolated their connection from any neighbors; few if
    any subscribers validate the ISP's DHCP server in order to thwart a
@@ -441,14 +461,6 @@ Internet-Draft          Default Border Definition          November 2012
    SHOULD administratively log this configuration and SHOULD provide a
    means to alert the user to this condition.  Note that for isolated
    networks of homenet routers (e.g. a lab network) this configuration
-
-
-
-Kline                     Expires May 10, 2013                  [Page 8]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
    is entirely valid.
 
    User notification alone is not sufficient protection for the homenet
@@ -478,13 +490,21 @@ Internet-Draft          Default Border Definition          November 2012
    As a homenet router forms adjacencies and learns internal aggregate
    prefixes it could dynamically maintain a single logical entity
    encompassing all current internal prefixes in use that can be treated
-   as a whole (e.g. an access list).  Below are example filtering
+   as a whole (i.e. an access list).  Below are example filtering
    policies that might be applied by homenet routers with knowledge of
    both this prefix set and the interior or exterior classification of
    all interfaces.
 
    The examples below use the string "{interior_nets}" for refer to the
    grouping of all internal aggregate prefixes.  The sample filtering
+
+
+
+Kline                  Expires September 13, 2013               [Page 9]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
    policy rules are written in configuration pseudo-syntax that should
    hopefully be intuitive.
 
@@ -494,16 +514,6 @@ Internet-Draft          Default Border Definition          November 2012
    categorization of interfaces, all interior interfaces could apply a
    stateless filter designed to prevent devices in the home from
    originating source-address-spoofed traffic.
-
-
-
-
-
-
-Kline                     Expires May 10, 2013                  [Page 9]
-
-Internet-Draft          Default Border Definition          November 2012
-
 
    Using a filter configuration pseudo-syntax:
 
@@ -543,6 +553,14 @@ Internet-Draft          Default Border Definition          November 2012
    Because routing changes elsewhere in the home may cause traffic to
    shift among interior next hops which may not have state, traffic
    between interior routers may not be well-served by stateful
+
+
+
+Kline                  Expires September 13, 2013              [Page 10]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
    filtering.  One consequence for this policy on mixed-mode interfaces
    is that traffic from the exterior with spoofed source addresses from
    the "{interior_nets}" set of prefixes may be mistakenly allowed into
@@ -553,14 +571,6 @@ Internet-Draft          Default Border Definition          November 2012
    precise filters.  Such implementations could deny traffic with
    "{interior_nets}" source addresses arriving from an exterior next
    hop, but permit them from an interior next hop on the same mixed-mode
-
-
-
-Kline                     Expires May 10, 2013                 [Page 10]
-
-Internet-Draft          Default Border Definition          November 2012
-
-
    interface.
 
 
@@ -599,6 +609,14 @@ Internet-Draft          Default Border Definition          November 2012
    [RFC4890]  Davies, E. and J. Mohacsi, "Recommendations for Filtering
               ICMPv6 Messages in Firewalls", RFC 4890, May 2007.
 
+
+
+
+Kline                  Expires September 13, 2013              [Page 11]
+
+Internet-Draft          Default Border Definition             March 2013
+
+
    [RFC6092]  Woodyatt, J., "Recommended Simple Security Capabilities in
               Customer Premises Equipment (CPE) for Providing
               Residential IPv6 Internet Service", RFC 6092,
@@ -607,14 +625,6 @@ Internet-Draft          Default Border Definition          November 2012
    [TORPIG]   Stone-Gross, B., "Your Botnet is My Botnet: Analysis of a
               Botnet Takeover", 2009, <http://www.cs.ucsb.edu/~seclab/
               projects/torpig/torpig.pdf>.
-
-
-
-
-
-Kline                     Expires May 10, 2013                 [Page 11]
-
-Internet-Draft          Default Border Definition          November 2012
 
 
 Author's Address
@@ -658,15 +668,5 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-Kline                     Expires May 10, 2013                 [Page 12]
+Kline                  Expires September 13, 2013              [Page 12]
 

@@ -36,7 +36,7 @@
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
 <rfc category="info"
-     docName="draft-kline-default-perimeter-01"
+     docName="draft-kline-homenet-default-perimeter-00"
      ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
        ipr values: trust200902, noModificationTrust200902,
@@ -125,7 +125,7 @@ boundaries.
       <t>
 Many architectures make it difficult or impossible (by design) to detect
 administrative boundaries and rely on various mechanisms of user or
-administrator invention to create or modify such boundaries.  Other hints
+administrator intervention to create or modify such boundaries.  Other hints
 about administrative boundaries can be insecure, unreliable, operationally
 impractical, or may place arbitrary requirements upon the architecture where
 previously no such requirement existed.
@@ -213,9 +213,9 @@ between the "interior" and the "exterior" lies.
       <t>
 Interfaces which have not yet determined their categorization may consider
 themselves to be in a "learning" state, where no traffic is routed but
-probing continues.  Once nodes of any kind (e.g. either routers or hosts)
-are detected, classification takes place and the router exits the "learning"
-state.
+probing is performed.  Once nodes of any kind (e.g. either routers or hosts)
+are detected, classification takes place and the interface exits the
+"learning" state.
       </t>
 
       <t>
@@ -236,13 +236,17 @@ Classify interfaces according to the nature of their next hops.
       </t>
 
       <t>
-Manually configured next hops MUST also have their classification as either
+Manually configured next hops SHOULD also have their classification as either
 "internal" or "external" explicitly specified.  As such, they can be
 considered to be of a fixed category, and on-going evaluation is NOT required.
+If no "interior"/"exterior" classification is specified the next hop MUST by
+default be classified as "exterior".
       </t>
       <t>
-Policies of various sorts can be applied and updated as appropriate based on
-these classifications, as and when they are determined.
+Numerous policies can be applied and updated as appropriate based on these
+classifications, as and when they are determined.  Further discussion of
+policy recommendations (except by example) is outside the scope of this
+document.
       </t>
 
       <section title="Collect information about neighboring routers">
@@ -250,8 +254,8 @@ these classifications, as and when they are determined.
 An interface (physical or virtual) which is configured to dynamically assess
 its internal or external classification MUST periodically probe for routing
 information on the link.  This includes sending Router Solicitations,
-DHCPv6 Prefix Delegation requests, and probing for homenet routing
-protocol-capable nodes.
+DHCPv6 Prefix Delegation requests (or Renew requests), and probing for homenet
+routing protocol-capable nodes.
         </t>
 
         <t>
@@ -263,12 +267,14 @@ of probing by implementing mechanisms like exponential back-off.
         </t>
 
         <t>
-Homenet routers MUST be able to identify loops, e.g. when two (or more) of
-the router's own interfaces are connected on the same link.  Compliant routers
-MUST administratively log this misconfiguration, and SHOULD implement a
+Homenet routers MUST be able to identify when two (or more) of the router's
+interfaces are connected on to the same link, e.g. by observing unique
+properties of a probe by which it can recognize itself.  Compliant routers
+MUST administratively log this configuration, and SHOULD implement a
 mechanism that permits maximum continued homenet functionality if possible.
-For example, implementations MAY administratively disable all but one of
-looped interfaces.
+For example, implementations MAY administratively disable all but one of the
+interfaces in question or MAY treat the collection of interfaces as a single
+logical interface in a manner suitable to the link type.
         </t>
       </section>
 
@@ -285,8 +291,9 @@ established MUST be considered "internal".
 Routers of which this homenet router has knowledge but with which no homenet
 routing protocol adjacency is successfully establish AND from which no routing
 information is learned SHOULD be considered "internal".  This includes
-"downstream" routers for which the homenet router is acting as the Delegating
-Router via a DHCPv6 Prefix Delegation exchange.
+"downstream" routers for which the homenet router may be acting as the
+Delegating Router via a DHCPv6 Prefix Delegation exchange but which do not
+implement the homenet routing protocol.
         </t>
         <t>
 All other routers with which no homenet routing protocol adjacency is
@@ -316,6 +323,11 @@ routers form an adjacency with each other over the same interface they use for
 communicating to "upstream" ISP routers.
           </t>
           <t>
+A homenet router by default SHOULD classify such "mixed mode" interfaces as
+"external".  Transmitting "internal" communications over interfaces with
+"external" nodes is NOT RECOMMENDED.
+          </t>
+          <t>
 All homenet routers, whether this configuration is considered supported or
 not, MUST administratively log and provide product-relevant notification of
 this configuration, preferably with recommendations for resolution.
@@ -329,7 +341,7 @@ Home routers performing dynamic border discovery MUST continuously evaluate
 the interior and exterior classifications of interfaces.  These may change at
 any time, for example if new devices are added into the network or a power
 event causes all equipment to reset, and specific ordering of device
-bring-up within a homenet network MAY NOT be assumed.
+bring-up within a homenet network MUST NOT be assumed.
         </t>
         <t>
 Homenet routers performing dynamic border discovery SHOULD administratively
@@ -481,7 +493,7 @@ the user wishes to force into either an interior or exterior classification
 As a homenet router forms adjacencies and learns internal aggregate prefixes
 it could dynamically maintain a single logical entity encompassing all
 current internal prefixes in use that can be treated as a whole
-(e.g. an access list).  Below are example filtering policies that might be
+(i.e. an access list).  Below are example filtering policies that might be
 applied by homenet routers with knowledge of both this prefix set and the
 interior or exterior classification of all interfaces.
         </t>
